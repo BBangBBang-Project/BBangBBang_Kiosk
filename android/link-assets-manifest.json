@@ -1,0 +1,25 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/DoHyeon-Regular.ttf",
+      "sha1": "faabc73ae74229f92290828f002c2b79749bca09"
+    },
+    {
+      "path": "src/assets/fonts/Pretendard-Bold.ttf",
+      "sha1": "ce90f236c12bd6c335e780b3df1dc83e520d4649"
+    },
+    {
+      "path": "src/assets/fonts/Pretendard-ExtraBold.ttf",
+      "sha1": "08ac75df594fa654758b5b256de7e2a56d397502"
+    },
+    {
+      "path": "src/assets/fonts/Pretendard-SemiBold.ttf",
+      "sha1": "17f11e7a57ba21e9d9a97a3bdb5637c70c0c6037"
+    },
+    {
+      "path": "src/assets/fonts/Pretendard－M.ttf",
+      "sha1": "daa909f300e9be755b3c52811c34a3af41864a57"
+    }
+  ]
+}

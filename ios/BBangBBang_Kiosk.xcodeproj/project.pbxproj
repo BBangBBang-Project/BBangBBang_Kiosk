@@ -9,11 +9,16 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* BBangBBang_KioskTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* BBangBBang_KioskTests.m */; };
 		0C80B921A6F3F58F76C31292 /* libPods-BBangBBang_Kiosk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-BBangBBang_Kiosk.a */; };
+		131F6E3F41104B9197FA528D /* Pretendard-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B141851119B74178884536A8 /* Pretendard-SemiBold.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1574BD56D7A641DBB90CE51C /* Pretendard-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 975B7E90EFBB4AA1B6208F60 /* Pretendard-ExtraBold.ttf */; };
+		26E0F8935BD04597A4EF965D /* Pretendard－M.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9FF78F707D7644E6A33CD414 /* Pretendard－M.ttf */; };
+		4337D35D2406414B898E1FD1 /* Pretendard-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5E6862FA966D42668FDE7300 /* Pretendard-Bold.ttf */; };
 		7699B88040F8A987B510C191 /* libPods-BBangBBang_Kiosk-BBangBBang_KioskTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-BBangBBang_Kiosk-BBangBBang_KioskTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		C735F95D34DB43E9A00A2490 /* DoHyeon-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 19937E25981B4450A2F1CF8B /* DoHyeon-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,13 +41,18 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = BBangBBang_Kiosk/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = BBangBBang_Kiosk/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = BBangBBang_Kiosk/main.m; sourceTree = "<group>"; };
+		19937E25981B4450A2F1CF8B /* DoHyeon-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "DoHyeon-Regular.ttf"; path = "../src/assets/fonts/DoHyeon-Regular.ttf"; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-BBangBBang_Kiosk-BBangBBang_KioskTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BBangBBang_Kiosk-BBangBBang_KioskTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4392A12AC88292D35C810B /* Pods-BBangBBang_Kiosk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BBangBBang_Kiosk.debug.xcconfig"; path = "Target Support Files/Pods-BBangBBang_Kiosk/Pods-BBangBBang_Kiosk.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-BBangBBang_Kiosk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BBangBBang_Kiosk.release.xcconfig"; path = "Target Support Files/Pods-BBangBBang_Kiosk/Pods-BBangBBang_Kiosk.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-BBangBBang_Kiosk-BBangBBang_KioskTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BBangBBang_Kiosk-BBangBBang_KioskTests.debug.xcconfig"; path = "Target Support Files/Pods-BBangBBang_Kiosk-BBangBBang_KioskTests/Pods-BBangBBang_Kiosk-BBangBBang_KioskTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-BBangBBang_Kiosk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BBangBBang_Kiosk.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5E6862FA966D42668FDE7300 /* Pretendard-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Bold.ttf"; path = "../src/assets/fonts/Pretendard-Bold.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = BBangBBang_Kiosk/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-BBangBBang_Kiosk-BBangBBang_KioskTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BBangBBang_Kiosk-BBangBBang_KioskTests.release.xcconfig"; path = "Target Support Files/Pods-BBangBBang_Kiosk-BBangBBang_KioskTests/Pods-BBangBBang_Kiosk-BBangBBang_KioskTests.release.xcconfig"; sourceTree = "<group>"; };
+		975B7E90EFBB4AA1B6208F60 /* Pretendard-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-ExtraBold.ttf"; path = "../src/assets/fonts/Pretendard-ExtraBold.ttf"; sourceTree = "<group>"; };
+		9FF78F707D7644E6A33CD414 /* Pretendard－M.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard－M.ttf"; path = "../src/assets/fonts/Pretendard－M.ttf"; sourceTree = "<group>"; };
+		B141851119B74178884536A8 /* Pretendard-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-SemiBold.ttf"; path = "../src/assets/fonts/Pretendard-SemiBold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -122,6 +132,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				B021BC9D226045E1930AD31C /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -135,6 +146,19 @@
 				00E356EE1AD99517003FC87E /* BBangBBang_KioskTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B021BC9D226045E1930AD31C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				19937E25981B4450A2F1CF8B /* DoHyeon-Regular.ttf */,
+				5E6862FA966D42668FDE7300 /* Pretendard-Bold.ttf */,
+				975B7E90EFBB4AA1B6208F60 /* Pretendard-ExtraBold.ttf */,
+				B141851119B74178884536A8 /* Pretendard-SemiBold.ttf */,
+				9FF78F707D7644E6A33CD414 /* Pretendard－M.ttf */,
+			);
+			name = Resources;
+			path = "";
 			sourceTree = "<group>";
 		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
@@ -243,6 +267,11 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				C735F95D34DB43E9A00A2490 /* DoHyeon-Regular.ttf in Resources */,
+				4337D35D2406414B898E1FD1 /* Pretendard-Bold.ttf in Resources */,
+				1574BD56D7A641DBB90CE51C /* Pretendard-ExtraBold.ttf in Resources */,
+				131F6E3F41104B9197FA528D /* Pretendard-SemiBold.ttf in Resources */,
+				26E0F8935BD04597A4EF965D /* Pretendard－M.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
