@@ -22,7 +22,7 @@ const PurchaseScreen = ({navigation}) => {
         setBreads(response.data);
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        console.error('error : ', error);
       });
   }, []);
 
@@ -34,13 +34,19 @@ const PurchaseScreen = ({navigation}) => {
     setModalVisible(!modalVisible);
   };
 
+  const calculateDiscountPrice = price => {
+    return (parseInt(price, 10) * 0.7).toFixed(0); // 30% 할인된 가격
+  };
+
   const renderBreadItem = ({item}) => (
     <TouchableOpacity style={styles.breadItem} onPress={() => addToOrder(item)}>
       <Image source={item.image} style={styles.breadImage} />
       <View style={styles.breadInfo}>
         <Text style={styles.breadName}>{item.name}</Text>
-        <Text style={styles.breadPrice}> {item.price}</Text>
-        <Text style={styles.breadDiscountPrice}>{item.discountPrice}</Text>
+        <Text style={styles.breadPrice}> {item.price}원</Text>
+        <Text style={styles.breadDiscountPrice}>
+          {calculateDiscountPrice(item.price)}원
+        </Text>
         <Text style={styles.breadStock}>재고: {item.stock}개</Text>
       </View>
     </TouchableOpacity>
