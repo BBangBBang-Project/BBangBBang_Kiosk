@@ -1,17 +1,41 @@
 import React from 'react';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 //데이터 일단 임의로 만들어서 테스트
 const ManageBreadScreen = ({navigation}) => {
   const breads = [
-    { id: '1', name: '소보로빵', price: '2000원', stock : 10, image: require('../assets/images/soboroBread.png') },
-    { id: '2', name: '소금빵', price: '3000원', stock: 15, image: require('../assets/images/saltBread.png') },
-    { id: '3', name: '바게트', price: '2000원', stock: 5, image: require('../assets/images/baguette.png') },
+    {
+      id: '1',
+      name: '소보로빵',
+      price: '2000원',
+      stock: 10,
+      image: require('../assets/images/soboroBread.png'),
+    },
+    {
+      id: '2',
+      name: '소금빵',
+      price: '3000원',
+      stock: 15,
+      image: require('../assets/images/saltBread.png'),
+    },
+    {
+      id: '3',
+      name: '바게트',
+      price: '2000원',
+      stock: 5,
+      image: require('../assets/images/baguette.png'),
+    },
   ];
 
-
-  const renderBreadItem = ({ item }) => (
+  const renderBreadItem = ({item}) => (
     <View style={styles.breadItem}>
       <Image source={item.image} style={styles.breadImage} />
       <View style={styles.breadInfo}>
@@ -24,16 +48,18 @@ const ManageBreadScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-        <Text style={styles.title}>진열 빵 목록</Text>
+      <Text style={styles.title}>진열 빵 목록</Text>
       <FlatList
         data={breads}
         renderItem={renderBreadItem}
         keyExtractor={item => item.id}
       />
 
-    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddBread')}>
-          <Icon name="plus" size={60} color="white" />
-        </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('AddBread')}>
+        <Icon name="plus" size={60} color="white" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -50,7 +76,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: 'Pretendard-Bold',
     marginBottom: 30,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   breadItem: {
     flexDirection: 'row',
@@ -87,7 +113,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'black',
   },
-    
+
   button: {
     backgroundColor: '#D3705B',
     paddingVertical: 5,

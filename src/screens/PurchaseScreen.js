@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -12,7 +13,18 @@ import {
 const PurchaseScreen = ({navigation}) => {
   const [orders, setOrders] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [breads, setBreads] = useState([]);
 
+  useEffect(() => {
+    axios
+      .get('http://172.20.10.5:8080/kiosk/bread')
+      .then(response => {
+        setBreads(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
   const addToOrder = menuItem => {
     setOrders([...orders, menuItem]);
@@ -22,21 +34,7 @@ const PurchaseScreen = ({navigation}) => {
     setModalVisible(!modalVisible);
   };
 
-  const breads = [
-    { id: '1', name: '소보로빵', price: '2000원', discountPrice: '1500원', stock : 10, image: require('../assets/images/soboroBread.png') },
-    { id: '2', name: '소금빵', price: '3000원', discountPrice: '2500원', stock: 15, image: require('../assets/images/saltBread.png') },
-    { id: '3', name: '바게트', price: '2000원', discountPrice: '1500원', stock: 5, image: require('../assets/images/baguette.png') },
-    { id: '4', name: '소세지빵', price: '4000원', discountPrice: '2000원', stock: 5, image: require('../assets/images/sausageBread.png') },
-    { id: '5', name: '바게트', price: '2000원', discountPrice: '1500원', stock: 5, image: require('../assets/images/baguette.png') },
-    { id: '6', name: '바게트', price: '2000원', discountPrice: '1500원', stock: 5, image: require('../assets/images/baguette.png') },
-    { id: '7', name: '바게트', price: '2000원', discountPrice: '1500원', stock: 5, image: require('../assets/images/baguette.png') },
-    { id: '8', name: '소세지빵', price: '4000원', discountPrice: '2000원', stock: 5, image: require('../assets/images/sausageBread.png') },
-    { id: '9', name: '바게트', price: '2000원', discountPrice: '1500원', stock: 5, image: require('../assets/images/baguette.png') },
-    { id: '10', name: '바게트', price: '2000원', discountPrice: '1500원', stock: 5, image: require('../assets/images/baguette.png') },
-  ];
-
-
-  const renderBreadItem = ({ item }) => (
+  const renderBreadItem = ({item}) => (
     <TouchableOpacity style={styles.breadItem} onPress={() => addToOrder(item)}>
       <Image source={item.image} style={styles.breadImage} />
       <View style={styles.breadInfo}>
@@ -48,7 +46,7 @@ const PurchaseScreen = ({navigation}) => {
     </TouchableOpacity>
   );
 
-  const renderOrderItem = ({ item }) => (
+  const renderOrderItem = ({item}) => (
     <View style={styles.orderItem}>
       <Text>{item.name}</Text>
       <Text>{item.discountPrice}</Text>
@@ -63,7 +61,7 @@ const PurchaseScreen = ({navigation}) => {
         <FlatList
           data={breads}
           renderItem={renderBreadItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
           numColumns={3}
         />
       </View>
@@ -93,8 +91,7 @@ const PurchaseScreen = ({navigation}) => {
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
-        }}
-      >
+        }}>
         <View style={styles.modalContainer}>
           <Text style={styles.orderTitle}>주문 내역</Text>
           <FlatList
@@ -111,7 +108,7 @@ const PurchaseScreen = ({navigation}) => {
               <Text style={styles.modalText}>취소하기</Text>
             </TouchableOpacity>
             <TouchableOpacity
-               onPress={() => {
+              onPress={() => {
                 navigation.navigate('PurchaseComplete');
               }}
               style={styles.modalButton}>
@@ -138,7 +135,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   modalContainer: {
-    width : '90%',
+    width: '90%',
     height: '80%',
     backgroundColor: 'white',
     borderRadius: 10,
@@ -203,7 +200,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     marginLeft: 20,
   },
-  modalButton:{
+  modalButton: {
     backgroundColor: 'white',
     paddingVertical: 10,
     paddingHorizontal: 50,
@@ -271,7 +268,6 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginRight: 10,
   },
-
 });
 
 export default PurchaseScreen;
