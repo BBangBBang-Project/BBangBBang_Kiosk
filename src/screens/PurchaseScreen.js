@@ -17,7 +17,7 @@ const PurchaseScreen = ({navigation}) => {
 
   useEffect(() => {
     axios
-      .get('http://172.20.10.5:8080/kiosk/bread')
+      .get('http://192.168.219.103:8080/kiosk/bread')
       .then(response => {
         setBreads(response.data);
       })
@@ -38,17 +38,27 @@ const PurchaseScreen = ({navigation}) => {
     return (parseInt(price, 10) * 0.7).toFixed(0); // 30% 할인된 가격
   };
 
+  //      <Image source={item.image} style={styles.breadImage} />
   const renderBreadItem = ({item}) => (
     <TouchableOpacity style={styles.breadItem} onPress={() => addToOrder(item)}>
-      <Image source={item.image} style={styles.breadImage} />
       <View style={styles.breadInfo}>
+        <Image
+          source={require('../assets/images/saltBread.png')}
+          style={styles.breadImage}
+        />
         <Text style={styles.breadName}>{item.name}</Text>
-        <Text style={styles.breadPrice}> {item.price}원</Text>
-        <Text style={styles.breadDiscountPrice}>
-          {calculateDiscountPrice(item.price)}원
+        <Text style={styles.breadPrice}>
+          {' '}
+          {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
         </Text>
-        <Text style={styles.breadStock}>재고: {item.stock}개</Text>
+        <Text style={styles.breadDiscountPrice}>
+          {calculateDiscountPrice(item.price)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          원
+        </Text>
       </View>
+      <Text style={styles.breadStock}>재고: {item.stock}개</Text>
     </TouchableOpacity>
   );
 
@@ -231,8 +241,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   breadImage: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
   },
   breadItem: {
     backgroundColor: '#F3E3D3',
@@ -243,6 +253,8 @@ const styles = StyleSheet.create({
   },
   breadInfo: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   breadName: {
     fontFamily: 'Pretendard-Bold',
@@ -270,7 +282,7 @@ const styles = StyleSheet.create({
   breadStock: {
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 20,
-    color: 'black',
+    color: '#D3705B',
     textAlign: 'right',
     marginRight: 10,
   },

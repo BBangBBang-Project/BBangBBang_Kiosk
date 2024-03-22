@@ -1,4 +1,5 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -9,50 +10,64 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-//데이터 일단 임의로 만들어서 테스트
-const ManageBreadScreen = ({navigation}) => {
-  const breads = [
-    {
-      id: '1',
-      name: '소보로빵',
-      price: '2000원',
-      stock: 10,
-      image: require('../assets/images/soboroBread.png'),
-    },
-    {
-      id: '2',
-      name: '소금빵',
-      price: '3000원',
-      stock: 15,
-      image: require('../assets/images/saltBread.png'),
-    },
-    {
-      id: '3',
-      name: '바게트',
-      price: '2000원',
-      stock: 5,
-      image: require('../assets/images/baguette.png'),
-    },
-  ];
+const ManageBreadScreen = ({navigation, route}) => {
+  const [breads, setBreads] = useState([]);
+
+  useEffect(() => {
+    const fetchBreads = () => {
+      axios
+        .get('http://192.168.219.103:8080/kiosk/bread')
+        .then(response => {
+          setBreads(response.data);
+        })
+        .catch(error => {
+          console.error('error : ', error);
+        });
+    };
+
+    fetchBreads();
+    //빵 추가하고 넘어갈때 실시간 업데이트 안되는 문제 해결
+    if (route.params && route.params.refresh) {
+      fetchBreads();
+    }
+  }, [route.params]);
+
+  const handleEditBread = id => {
+    navigation.navigate('EditBread', {id: id});
+  };
 
   const renderBreadItem = ({item}) => (
-    <View style={styles.breadItem}>
-      <Image source={item.image} style={styles.breadImage} />
-      <View style={styles.breadInfo}>
-        <Text style={styles.breadName}>{item.name}</Text>
-        <Text style={styles.breadPrice}>가격: {item.price}</Text>
-        <Text style={styles.breadStock}>재고: {item.stock}개</Text>
+    <TouchableOpacity onPress={() => handleEditBread(item.id)}>
+      <View style={styles.breadItem}>
+        <Image
+          source={require('../assets/images/saltBread.png')}
+          style={styles.breadImage}
+        />
+        <View style={styles.breadInfo}>
+          <Text style={styles.breadName}>{item.name}</Text>
+          <Text style={styles.breadPrice}>
+            가격 : {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            원
+          </Text>
+          <Text style={styles.breadStock}>재고 : {item.stock}개</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>진열 빵 목록</Text>
+      <View style={styles.row}>
+        <Image
+          source={require('../assets/images/bread.png')}
+          style={styles.image}
+        />
+        <Text style={styles.title}>진열 빵 목록</Text>
+      </View>
       <FlatList
         data={breads}
         renderItem={renderBreadItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
       />
 
       <TouchableOpacity
@@ -76,13 +91,19 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: 'Pretendard-Bold',
     marginBottom: 30,
-    textAlign: 'center',
+    marginLeft: 30,
+    marginRight: 30,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   breadItem: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    borderColor: '#ccc',
+    borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
@@ -91,7 +112,13 @@ const styles = StyleSheet.create({
   breadImage: {
     width: 150,
     height: 150,
-    marginRight: 60,
+    marginRight: 50,
+    marginLeft: 40,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    marginBottom: 30,
   },
   breadInfo: {
     flex: 1,

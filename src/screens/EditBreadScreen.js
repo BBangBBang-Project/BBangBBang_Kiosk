@@ -1,30 +1,57 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const AddBreadScreen = () => {
+const EditBreadScreen = () => {
   const [breadName, setBreadName] = useState('');
   const [price, setPrice] = useState('');
   const [details, setDetails] = useState('');
   const [stock, setStock] = useState('');
 
   const navigation = useNavigation();
+  const route = useRoute();
+  const productId = route.params.productId;
+
+  useEffect(() => {
+    axios
+      .get('http://192.168.219.103:8080/kiosk/bread/${id}')
+      .then(response => {
+        const bread = response.data;
+        setBreadName(bread.name);
+        setPrice(bread.price.toString());
+        setStock(bread.stock.toString());
+      })
+      .catch(error => {
+        console.error('error : ', error);
+      });
+  }, []);
 
   const handleSave = () => {
     axios
-      .post('http://192.168.219.103:8080/kiosk/bread', {
+      .put('http://192.168.219.103:8080/kiosk/bread/${id}', {
         name: breadName,
         price: price,
         stock: stock,
       })
+      .then(response => {
+        console.log('Response:', response.data);
+        navigation.navigate('ManageBread', {refresh: true});
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  };
+  const handleDelete = () => {
+    axios
+      .delete('http://192.168.219.103:8080/kiosk/bread/${id}')
       .then(response => {
         console.log('Response:', response.data);
         navigation.navigate('ManageBread', {refresh: true});
@@ -70,9 +97,14 @@ const AddBreadScreen = () => {
         value={details}
         onChangeText={text => setDetails(text)}
       />
-      <TouchableOpacity style={styles.button} onPress={handleSave}>
-        <Text style={styles.buttonText}>빵 등록</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={handleSave}>
+          <Text style={styles.buttonText}>수정</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleDelete}>
+          <Text style={styles.buttonText}>삭제</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -119,14 +151,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 60,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 60,
-    marginBottom: 20,
+    marginLeft: 30,
+    marginRight: 30,
   },
   buttonText: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 35,
     color: 'white',
   },
+  buttonContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
 });
 
-export default AddBreadScreen;
+export default EditBreadScreen;
