@@ -16,9 +16,10 @@ const EditBreadScreen = ({navigation, route}) => {
   const [breads, setBreads] = useState([]);
   const {id} = route.params;
 
+  //.get(`http://172.20.10.5:8080/kiosk/bread/${id}`)
   useEffect(() => {
     axios
-      .get(`http://172.20.10.5:8080/kiosk/bread/${id}`)
+      .get(`http://192.168.219.104:8080/kiosk/bread/${id}`)
       .then(response => {
         const {name, price, stock} = response.data;
         setBreadName(name);
@@ -32,7 +33,7 @@ const EditBreadScreen = ({navigation, route}) => {
 
   const handleSave = () => {
     axios
-      .put(`http://172.20.10.5:8080/kiosk/bread/${id}`, {
+      .put(`http://192.168.219.104:8080/kiosk/bread/${id}`, {
         name: breadName,
         price: price,
         stock: stock,
@@ -47,7 +48,7 @@ const EditBreadScreen = ({navigation, route}) => {
   };
   const handleDelete = () => {
     axios
-      .delete(`http://172.20.10.5:8080/kiosk/bread/${id}`)
+      .delete(`http://192.168.219.104:8080/kiosk/bread/${id}`)
       .then(response => {
         console.log('Response:', response.data);
         navigation.navigate('ManageBread', {refresh: true});

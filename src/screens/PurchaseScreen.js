@@ -14,10 +14,11 @@ const PurchaseScreen = ({navigation}) => {
   const [orders, setOrders] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [breads, setBreads] = useState([]);
+  const [count, setCount] = useState(1);
 
   useEffect(() => {
     axios
-      .get('http://172.20.10.5:8080/kiosk/bread')
+      .get('http:/192.168.219.104:8080/kiosk/bread')
       .then(response => {
         setBreads(response.data);
       })
@@ -27,7 +28,38 @@ const PurchaseScreen = ({navigation}) => {
   }, []);
 
   const addToOrder = menuItem => {
-    setOrders([...orders, menuItem]);
+    const existingIndex = orders.findIndex(item => item.id === menuItem.id);
+    if (existingIndex !== -1) {
+      const updatedOrders = [...orders];
+      updatedOrders[existingIndex].count++;
+      setOrders(updatedOrders);
+    } else {
+      setOrders([...orders, {...menuItem, count: 1}]);
+    }
+  };
+
+  const removeFromOrder = menuItemId => {
+    const updatedOrders = orders.filter(item => item.id !== menuItemId);
+    setOrders(updatedOrders);
+  };
+
+  const increaseCount = menuItemId => {
+    const existingIndex = orders.findIndex(item => item.id === menuItemId);
+    if (existingIndex !== -1) {
+      const updatedOrders = [...orders];
+      updatedOrders[existingIndex].count++;
+      setOrders(updatedOrders);
+    }
+  };
+  const decreaseCount = menuItemId => {
+    const existingIndex = orders.findIndex(item => item.id === menuItemId);
+    if (existingIndex !== -1) {
+      const updatedOrders = [...orders];
+      if (updatedOrders[existingIndex].count > 1) {
+        updatedOrders[existingIndex].count--;
+        setOrders(updatedOrders);
+      }
+    }
   };
 
   const toggleModal = () => {
@@ -37,6 +69,15 @@ const PurchaseScreen = ({navigation}) => {
   const calculateDiscountPrice = price => {
     return (parseInt(price, 10) * 0.7).toFixed(0); // 30% 할인된 가격
   };
+
+  const totalQuantity = orders.reduce((total, item) => total + item.count, 0);
+
+  const totalPrice = orders.reduce(
+    (total, item) =>
+      total +
+      parseInt(calculateDiscountPrice(item.price, item.count), 10) * item.count,
+    0,
+  );
 
   //      <Image source={item.image} style={styles.breadImage} />
   const renderBreadItem = ({item}) => (
@@ -64,9 +105,50 @@ const PurchaseScreen = ({navigation}) => {
 
   const renderOrderItem = ({item}) => (
     <View style={styles.orderItem}>
-      <Text>{item.name}</Text>
-      <Text>{item.discountPrice}</Text>
-      <Text>{item.quantity}</Text>
+      <View style={styles.orderItemDetails}>
+        <Text style={styles.orderItemName}>{item.name}</Text>
+        <View style={styles.orderItemQuantity}>
+          <TouchableOpacity onPress={() => decreaseCount(item.id)}>
+            <Text style={styles.quantityButton}> - </Text>
+          </TouchableOpacity>
+          <Text style={styles.quantityText}> {item.count} </Text>
+          <TouchableOpacity onPress={() => increaseCount(item.id)}>
+            <Text style={styles.quantityButton}> + </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <Text style={styles.orderItemPrice}>
+        {(
+          parseInt(calculateDiscountPrice(item.price, item.count), 10) *
+          item.count
+        )
+          .toFixed(0)
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+        원
+      </Text>
+      <TouchableOpacity onPress={() => removeFromOrder(item.id)}>
+        <Text style={styles.cancelButton}> 삭제 </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const renderCheckItem = ({item}) => (
+    <View style={styles.orderCheckItem}>
+      <View style={styles.orderCheckDetails}>
+        <Text style={styles.orderCheckName}>{item.name}</Text>
+        <View style={styles.orderCheckQuantity}>
+          <Text style={styles.quantityCheckText}> {item.count}개 </Text>
+        </View>
+      </View>
+      <Text style={styles.orderCheckPrice}>
+        {(
+          parseInt(calculateDiscountPrice(item.price, item.count), 10) *
+          item.count
+        )
+          .toFixed(0)
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+        원
+      </Text>
     </View>
   );
 
@@ -82,7 +164,7 @@ const PurchaseScreen = ({navigation}) => {
         />
       </View>
       <View style={styles.orderContainer}>
-        <Text style={styles.orderTitle}>주문 내역</Text>
+        <Text style={styles.orderTitle}>주문 목록</Text>
         <FlatList
           data={orders}
           renderItem={renderOrderItem}
@@ -109,12 +191,22 @@ const PurchaseScreen = ({navigation}) => {
           setModalVisible(!modalVisible);
         }}>
         <View style={styles.modalContainer}>
-          <Text style={styles.orderTitle}>주문 내역</Text>
-          <FlatList
-            data={orders}
-            renderItem={renderOrderItem}
-            keyExtractor={(item, index) => index.toString()}
-          />
+          <Text style={styles.orderCheckTitle}>주문 내역</Text>
+          <View style={styles.orderCheckContainer}>
+            <FlatList
+              data={orders}
+              renderItem={renderCheckItem}
+              keyExtractor={(item, index) => index.toString()}
+            />
+            <View style={styles.totalContainer}>
+              <Text style={styles.totalText}>총 수량 : {totalQuantity}개</Text>
+              <Text style={styles.totalText}>
+                총 가격 :{' '}
+                {totalPrice.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
+              </Text>
+            </View>
+          </View>
+
           <View style={styles.modalButtonContainer}>
             <TouchableOpacity
               onPress={() => {
@@ -162,6 +254,16 @@ const styles = StyleSheet.create({
     marginLeft: 40,
     marginTop: 80,
   },
+  totalContainer: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  totalText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 30,
+    textAlign: 'center',
+    color: 'black',
+  },
   modalButtonContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -200,7 +302,118 @@ const styles = StyleSheet.create({
   orderTitle: {
     fontSize: 30,
     fontFamily: 'Pretendard-Bold',
+    padding: 10,
     marginBottom: 5,
+    color: 'black',
+  },
+
+  orderCheckContainer: {
+    borderWidth: 3,
+    borderColor: '#F3E3D3',
+    borderRadius: 10,
+    marginBottom: 10,
+    padding: 10,
+    width: '100%',
+    height: '80%',
+    textAlign: 'center',
+  },
+  orderCheckTitle: {
+    fontSize: 40,
+    fontFamily: 'Pretendard-Bold',
+    color: 'black',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  orderCheckName: {
+    fontSize: 35,
+    fontFamily: 'Pretendard-SemiBold',
+    color: 'black',
+    width: '50%',
+    textAlign: 'center',
+    marginRight: 30,
+  },
+  orderCheckPrice: {
+    fontSize: 35,
+    fontFamily: 'Pretendard-SemiBold',
+    color: 'black',
+    width: '30%',
+    textAlign: 'center',
+  },
+  quantityCheckText: {
+    fontSize: 35,
+    fontFamily: 'Pretendard-SemiBold',
+    color: 'black',
+    width: '90%',
+    textAlign: 'center',
+  },
+  orderItem: {
+    flexDirection: 'row',
+    borderBottomWidth: 2,
+    borderBottomColor: 'gray',
+    padding: 10,
+    alignContent: 'center',
+    justifyContent: 'space-around',
+  },
+  orderCheckItem: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: 'gray',
+    padding: 30,
+    justifyContent: 'space-around',
+  },
+  orderItemName: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 25,
+    marginRight: 20,
+    marginLeft: 20,
+    color: 'black',
+    width: '25%',
+    textAlign: 'center',
+  },
+  orderItemDetails: {
+    flexDirection: 'row',
+  },
+  orderItemQuantity: {
+    flexDirection: 'row',
+  },
+  orderCheckDetails: {
+    flexDirection: 'row',
+  },
+
+  quantityButton: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 30,
+    borderColor: 'black',
+    borderRadius: 3,
+    padding: 2,
+    color: 'black',
+    backgroundColor: '#D9D9D9',
+    textAlign: 'center',
+  },
+  quantityText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 25,
+    color: 'black',
+    width: '25%',
+    textAlign: 'center',
+    margin: 5,
+  },
+  orderItemPrice: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 25,
+    color: 'black',
+    width: '20%',
+    textAlign: 'center',
+  },
+  cancelButton: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 25,
+    borderWidth: 3,
+    textAlign: 'center',
+    borderRadius: 5,
+    borderColor: '#D3705B',
+    padding: 2,
+    color: '#D3705B',
   },
   buttonContainer: {
     justifyContent: 'center',

@@ -22,7 +22,7 @@ const AddBreadScreen = () => {
   const handleSave = () => {
     const breadId = nextId;
     axios
-      .post('http://172.20.10.5:8080/kiosk/bread', {
+      .post('http://192.168.219.104:8080/kiosk/bread', {
         id: breadId,
         name: breadName,
         price: price,
