@@ -1,42 +1,38 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import {
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const EditBreadScreen = () => {
+const EditBreadScreen = ({navigation, route}) => {
   const [breadName, setBreadName] = useState('');
   const [price, setPrice] = useState('');
-  const [details, setDetails] = useState('');
   const [stock, setStock] = useState('');
-
-  const navigation = useNavigation();
-  const route = useRoute();
-  const productId = route.params.productId;
+  const [breads, setBreads] = useState([]);
+  const {id} = route.params;
 
   useEffect(() => {
     axios
-      .get('http://192.168.219.103:8080/kiosk/bread/${id}')
+      .get(`http://172.20.10.5:8080/kiosk/bread/${id}`)
       .then(response => {
-        const bread = response.data;
-        setBreadName(bread.name);
-        setPrice(bread.price.toString());
-        setStock(bread.stock.toString());
+        const {name, price, stock} = response.data;
+        setBreadName(name);
+        setPrice(String(price));
+        setStock(String(stock));
       })
       .catch(error => {
         console.error('error : ', error);
       });
-  }, []);
+  }, [id]);
 
   const handleSave = () => {
     axios
-      .put('http://192.168.219.103:8080/kiosk/bread/${id}', {
+      .put(`http://172.20.10.5:8080/kiosk/bread/${id}`, {
         name: breadName,
         price: price,
         stock: stock,
@@ -51,7 +47,7 @@ const EditBreadScreen = () => {
   };
   const handleDelete = () => {
     axios
-      .delete('http://192.168.219.103:8080/kiosk/bread/${id}')
+      .delete(`http://172.20.10.5:8080/kiosk/bread/${id}`)
       .then(response => {
         console.log('Response:', response.data);
         navigation.navigate('ManageBread', {refresh: true});
@@ -65,7 +61,7 @@ const EditBreadScreen = () => {
     <View style={styles.container}>
       <Icon
         name="add-photo-alternate"
-        size={200}
+        size={250}
         color="black"
         style={styles.icon}
       />
@@ -88,14 +84,6 @@ const EditBreadScreen = () => {
         keyboardType="numeric"
         value={stock}
         onChangeText={text => setStock(text)}
-      />
-      <Text style={styles.text}>상세설명</Text>
-      <TextInput
-        style={[styles.input, {height: 150}]}
-        multiline={true}
-        numberOfLines={4}
-        value={details}
-        onChangeText={text => setDetails(text)}
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={handleSave}>
@@ -163,6 +151,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    marginTop: 100,
   },
 });
 

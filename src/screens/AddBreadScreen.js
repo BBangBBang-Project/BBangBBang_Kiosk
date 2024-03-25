@@ -15,18 +15,22 @@ const AddBreadScreen = () => {
   const [price, setPrice] = useState('');
   const [details, setDetails] = useState('');
   const [stock, setStock] = useState('');
+  const [nextId, setNextId] = useState(1);
 
   const navigation = useNavigation();
 
   const handleSave = () => {
+    const breadId = nextId;
     axios
-      .post('http://192.168.219.103:8080/kiosk/bread', {
+      .post('http://172.20.10.5:8080/kiosk/bread', {
+        id: breadId,
         name: breadName,
         price: price,
         stock: stock,
       })
       .then(response => {
         console.log('Response:', response.data);
+        setNextId(prevId => prevId + 1);
         navigation.navigate('ManageBread', {refresh: true});
       })
       .catch(error => {
@@ -38,7 +42,7 @@ const AddBreadScreen = () => {
     <View style={styles.container}>
       <Icon
         name="add-photo-alternate"
-        size={200}
+        size={250}
         color="black"
         style={styles.icon}
       />
@@ -62,14 +66,7 @@ const AddBreadScreen = () => {
         value={stock}
         onChangeText={text => setStock(text)}
       />
-      <Text style={styles.text}>상세설명</Text>
-      <TextInput
-        style={[styles.input, {height: 150}]}
-        multiline={true}
-        numberOfLines={4}
-        value={details}
-        onChangeText={text => setDetails(text)}
-      />
+
       <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>빵 등록</Text>
       </TouchableOpacity>
@@ -119,7 +116,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 60,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 60,
+    marginTop: 100,
     marginBottom: 20,
   },
   buttonText: {

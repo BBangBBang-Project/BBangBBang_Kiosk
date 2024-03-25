@@ -17,7 +17,7 @@ const PurchaseScreen = ({navigation}) => {
 
   useEffect(() => {
     axios
-      .get('http://192.168.219.103:8080/kiosk/bread')
+      .get('http://172.20.10.5:8080/kiosk/bread')
       .then(response => {
         setBreads(response.data);
       })
