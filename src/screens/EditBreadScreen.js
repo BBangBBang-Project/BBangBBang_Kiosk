@@ -1,30 +1,40 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import {
+  Image,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
+/*
+type Bread = {
+  id:Number,
+  name: String,
+  price: Number,
+  stock: Number,
+  imageUrl: String,
+};
+*/
 const EditBreadScreen = ({navigation, route}) => {
   const [breadName, setBreadName] = useState('');
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [breads, setBreads] = useState([]);
   const {id} = route.params;
 
   //.get(`http://172.20.10.5:8080/kiosk/bread/${id}`)
   useEffect(() => {
     axios
-      .get(`http://192.168.219.104:8080/kiosk/bread/${id}`)
+      .get(`http://172.20.10.5:8080/kiosk/bread/${id}`)
       .then(response => {
-        const {name, price, stock} = response.data;
+        const {name, price, stock, imageUrl} = response.data;
         setBreadName(name);
         setPrice(String(price));
         setStock(String(stock));
+        setImageUrl(imageUrl);
       })
       .catch(error => {
         console.error('error : ', error);
@@ -33,7 +43,7 @@ const EditBreadScreen = ({navigation, route}) => {
 
   const handleSave = () => {
     axios
-      .put(`http://192.168.219.104:8080/kiosk/bread/${id}`, {
+      .put(`http://172.20.10.5:8080/kiosk/bread/${id}`, {
         name: breadName,
         price: price,
         stock: stock,
@@ -57,15 +67,10 @@ const EditBreadScreen = ({navigation, route}) => {
         console.error('Error:', error);
       });
   };
-
+  //<Image source={{uri: imageUrl}} style={styles.breadImage} />
   return (
     <View style={styles.container}>
-      <Icon
-        name="add-photo-alternate"
-        size={250}
-        color="black"
-        style={styles.icon}
-      />
+      <Image source={{uri: imageUrl}} style={styles.breadImage} />
       <Text style={styles.text}>빵 이름</Text>
       <TextInput
         style={styles.input}
@@ -133,6 +138,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-SemiBold',
     marginRight: 450,
     marginBottom: 20,
+  },
+  breadImage: {
+    width: 150,
+    height: 150,
+    marginRight: 50,
+    marginLeft: 40,
   },
   button: {
     backgroundColor: '#D3705B',

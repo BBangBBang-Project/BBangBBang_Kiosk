@@ -16,7 +16,7 @@ const ManageBreadScreen = ({navigation, route}) => {
   useEffect(() => {
     const fetchBreads = () => {
       axios
-        .get('http://192.168.219.104:8080/kiosk/bread')
+        .get('http://172.20.10.5:8080/kiosk/bread')
         .then(response => {
           setBreads(response.data);
         })
@@ -35,14 +35,15 @@ const ManageBreadScreen = ({navigation, route}) => {
   const handleEditBread = id => {
     navigation.navigate('EditBread', {id: id});
   };
-
+  /*
+  <Image
+  source={require('../assets/images/saltBread.png')}
+  style={styles.breadImage}
+/>*/
   const renderBreadItem = ({item}) => (
     <TouchableOpacity onPress={() => handleEditBread(item.id)}>
       <View style={styles.breadItem}>
-        <Image
-          source={require('../assets/images/saltBread.png')}
-          style={styles.breadImage}
-        />
+        <Image source={{uri: item.imageUrl}} style={styles.breadImage} />
         <View style={styles.breadInfo}>
           <Text style={styles.breadName}>{item.name}</Text>
           <Text style={styles.breadPrice}>

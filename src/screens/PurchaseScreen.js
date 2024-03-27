@@ -18,7 +18,7 @@ const PurchaseScreen = ({navigation}) => {
 
   useEffect(() => {
     axios
-      .get('http:/192.168.219.104:8080/kiosk/bread')
+      .get('http:/172.20.10.5:8080/kiosk/bread')
       .then(response => {
         setBreads(response.data);
       })
@@ -68,6 +68,23 @@ const PurchaseScreen = ({navigation}) => {
 
   const calculateDiscountPrice = price => {
     return (parseInt(price, 10) * 0.7).toFixed(0); // 30% 할인된 가격
+  };
+
+  const sendPayData = () => {
+    const orderData = orders.map(item => ({
+      id: item.id,
+      count: count,
+    }));
+    axios
+      .post('http:/172.20.10.5:8080/kiosk/bread/order', {orderData})
+      .then(response => {
+        console.log('Order sent successfully:', response.data);
+        setModalVisible(false);
+        navigation.navigate('PurchaseComplete');
+      })
+      .catch(error => {
+        console.error('Error sending order:', error);
+      });
   };
 
   const totalQuantity = orders.reduce((total, item) => total + item.count, 0);
@@ -215,11 +232,7 @@ const PurchaseScreen = ({navigation}) => {
               style={styles.modalButton}>
               <Text style={styles.modalText}>취소하기</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('PurchaseComplete');
-              }}
-              style={styles.modalButton}>
+            <TouchableOpacity onPress={sendPayData} style={styles.modalButton}>
               <Text style={styles.modalText}>결제하기</Text>
             </TouchableOpacity>
           </View>

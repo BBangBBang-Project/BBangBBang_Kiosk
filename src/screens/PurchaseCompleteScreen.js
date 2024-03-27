@@ -1,13 +1,31 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
+/*
+const data = [
+  {key: '1', text: '소보로 빵 X 1'},
+  {key: '2', text: '크림 빵 X 2'},
+  {key: '3', text: '크림 빵 X 2'},
+  {key: '4', text: '크림 빵 X 2'},
+];
+*/
 const PurchaseCompleteScreen = ({navigation}) => {
-  const data = [
-    {key: '1', text: '소보로 빵 X 1'},
-    {key: '2', text: '크림 빵 X 2'},
-    {key: '3', text: '크림 빵 X 2'},
-    {key: '4', text: '크림 빵 X 2'},
-  ];
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
+    axios
+      .get('http://172.20.10.5:8080/kiosk/bread/order')
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  };
 
   const renderItem = ({item}) => (
     <Text style={styles.itemText}>{item.text}</Text>
