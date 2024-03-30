@@ -40,10 +40,11 @@ const ManageBreadScreen = ({navigation, route}) => {
   source={require('../assets/images/saltBread.png')}
   style={styles.breadImage}
 />*/
+
   const renderBreadItem = ({item}) => (
     <TouchableOpacity onPress={() => handleEditBread(item.id)}>
       <View style={styles.breadItem}>
-        <Image source={{uri: item.imageUrl}} style={styles.breadImage} />
+        <Image source={{uri: item.image_path}} style={styles.breadImage} />
         <View style={styles.breadInfo}>
           <Text style={styles.breadName}>{item.name}</Text>
           <Text style={styles.breadPrice}>
@@ -154,3 +155,65 @@ const styles = StyleSheet.create({
 });
 
 export default ManageBreadScreen;
+
+/*
+type Bread = {
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+  imageUrl: string;
+};
+const ManageBreadScreen = () => {
+  const [breads, setBreads] = useState<Bread[]>([]);
+
+  useEffect(() => {
+    const fetchBreads = async () => {
+      try {
+        const response = await axios.get(
+          `http://192.168.219.104:8080/kiosk/bread`,
+        );
+        setBreads(response.data);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
+    fetchBreads();
+  }, []);
+
+  return (
+    <ScrollView style={styles.container}>
+      {breads.map(bread => (
+        <View key={bread.id} style={styles.breadCard}>
+          <Text style={styles.breadText}>이름 {bread.name}</Text>
+          <Text style={styles.breadText}>가격 {bread.price}</Text>
+          <Text style={styles.breadText}>{bread.stock}</Text>
+          <Image source={{uri: bread.imageUrl}} style={styles.breadImage} />
+          <Text>{bread.imageUrl}</Text>
+        </View>
+      ))}
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 20,
+  },
+  breadCard: {
+    flex: 1,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  breadText: {
+    fontSize: 18,
+    marginBottom: 5,
+  },
+  breadImage: {
+    width: 200,
+    height: 200,
+  },
+});
+export default ManageBreadScreen;
+*/

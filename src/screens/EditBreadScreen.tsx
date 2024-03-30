@@ -58,7 +58,7 @@ const EditBreadScreen = ({navigation, route}) => {
   };
   const handleDelete = () => {
     axios
-      .delete(`http://192.168.219.104:8080/kiosk/bread/${id}`)
+      .delete(`http://172.20.10.5:8080/kiosk/bread/${id}`)
       .then(response => {
         console.log('Response:', response.data);
         navigation.navigate('ManageBread', {refresh: true});
@@ -168,3 +168,64 @@ const styles = StyleSheet.create({
 });
 
 export default EditBreadScreen;
+
+/*
+type Bread = {
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+  imageUrl: string;
+};
+const EditBreadScreen = () => {
+  const [breads, setBreads] = useState<Bread[]>([]);
+
+  useEffect(() => {
+    const fetchBreads = async () => {
+      try {
+        const response = await axios.get(
+          `http://192.168.219.104:8080/kiosk/bread/${id}`,
+        );
+        setBreads(response.data);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
+    fetchBreads();
+  }, []);
+
+  return (
+    <ScrollView style={styles.container}>
+      {breads.map(bread => (
+        <View key={bread.id} style={styles.breadCard}>
+          <Text style={styles.breadText}>이름 {bread.name}</Text>
+          <Text style={styles.breadText}>가격 {bread.price}</Text>
+          <Text style={styles.breadText}>{bread.stock}</Text>
+          <Image source={{uri: bread.imageUrl}} style={styles.breadImage} />
+        </View>
+      ))}
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 20,
+  },
+  breadCard: {
+    flex: 1,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  breadText: {
+    fontSize: 18,
+    marginBottom: 5,
+  },
+  breadImage: {
+    width: 200,
+    height: 200,
+  },
+});
+export default EditBreadScreen;
+*/

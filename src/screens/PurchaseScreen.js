@@ -15,10 +15,11 @@ const PurchaseScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [breads, setBreads] = useState([]);
   const [count, setCount] = useState(1);
+  const [nextId, setNextId] = useState(1);
 
   useEffect(() => {
     axios
-      .get('http:/172.20.10.5:8080/kiosk/bread')
+      .get('http://172.20.10.5:8080/kiosk/bread')
       .then(response => {
         setBreads(response.data);
       })
@@ -70,17 +71,21 @@ const PurchaseScreen = ({navigation}) => {
     return (parseInt(price, 10) * 0.7).toFixed(0); // 30% 할인된 가격
   };
 
+  //orderid 고정 문제 해결
   const sendPayData = () => {
+    const orderId = nextId;
     const orderData = orders.map(item => ({
+      order_id: orderId,
       id: item.id,
-      count: count,
+      count: item.count,
     }));
     axios
-      .post('http:/172.20.10.5:8080/kiosk/bread/order', {orderData})
+      .post('http://172.20.10.5:8080/kiosk/bread/order', orderData)
       .then(response => {
+        setNextId(prevId => prevId + 1);
         console.log('Order sent successfully:', response.data);
         setModalVisible(false);
-        navigation.navigate('PurchaseComplete');
+        navigation.navigate('PurchaseComplete', {orderId: orderId});
       })
       .catch(error => {
         console.error('Error sending order:', error);

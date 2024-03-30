@@ -9,26 +9,30 @@ const data = [
   {key: '4', text: '크림 빵 X 2'},
 ];
 */
-const PurchaseCompleteScreen = ({navigation}) => {
+const PurchaseCompleteScreen = ({navigation, route}) => {
   const [data, setData] = useState([]);
+  const {orderId} = route.params;
+  //const [breadName, setBreadName] = useState('');
+  //const [count, setCount] = useState('');
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = () => {
     axios
-      .get('http://172.20.10.5:8080/kiosk/bread/order')
+      .get(`http://172.20.10.5:8080/kiosk/bread/order/${orderId}`)
       .then(response => {
+        const {breadName, quantitySold} = response.data;
+       // setBreadName(breadName);
+        //setCount(quantitySold);
         setData(response.data);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  };
+  }, [orderId]);
 
   const renderItem = ({item}) => (
-    <Text style={styles.itemText}>{item.text}</Text>
+    <Text style={styles.itemText}>
+      {item.breadName} X {item.quantitySold} {orderId}
+    </Text>
   );
 
   return (
@@ -39,7 +43,7 @@ const PurchaseCompleteScreen = ({navigation}) => {
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={item => item.key}
+          keyExtractor={(item, index) => index.toString()}
           style={styles.itemContainer}
         />
 

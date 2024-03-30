@@ -1,6 +1,6 @@
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   Platform,
