@@ -3,6 +3,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import {
   Alert,
+  Image,
   Platform,
   StyleSheet,
   Text,
@@ -16,7 +17,6 @@ import {
 } from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
 const AddBreadScreen = () => {
   const [breadName, setBreadName] = useState('');
   const [price, setPrice] = useState('');
@@ -43,13 +43,12 @@ const AddBreadScreen = () => {
         // asset.uri가 undefined가 아니면 이미지 리사이징을 시도
         if (asset.uri) {
           try {
-            // 예를 들어, 너비를 300, 높이를 200으로 설정하고, JPEG 품질을 50%로 설정
             const resizedImage = await ImageResizer.createResizedImage(
               asset.uri,
-              30,
-              20,
+              200,
+              160,
               'JPEG',
-              50,
+              70,
             );
             setImage({
               uri: resizedImage.uri,
@@ -95,7 +94,7 @@ const AddBreadScreen = () => {
 
     try {
       const response = await axios.post(
-        'http://172.20.10.5:8080/kiosk/bread',
+        'http://192.168.219.106:8080/kiosk/bread',
         formData,
         {
           headers: {
@@ -112,11 +111,12 @@ const AddBreadScreen = () => {
       console.error(error);
     }
   };
-
+/*
+이미지 추가전에 사용한 코드. 추후에 필요하면 사용할 예정
   const handleSave = () => {
     const breadId = nextId;
     axios
-      .post('http://172.20.10.5:8080/kiosk/bread', {
+      .post('http://192.168.219.106:8080/kiosk/bread', {
         id: breadId,
         name: breadName,
         price: price,
@@ -131,16 +131,20 @@ const AddBreadScreen = () => {
         console.error('Error:', error);
       });
   };
-
+*/
   return (
     <View style={styles.container}>
-      <Icon
-        name="add-photo-alternate"
-        size={250}
-        color="black"
-        style={styles.icon}
-      />
       <TouchableOpacity onPress={selectImage}>
+        {image ? (
+          <Image source={{uri: image.uri}} style={styles.breadImage} />
+        ) : (
+          <Icon
+            name="add-photo-alternate"
+            size={250}
+            color="black"
+            style={styles.icon}
+          />
+        )}
         <Text style={styles.imageText}>이미지 추가하기</Text>
       </TouchableOpacity>
       <Text style={styles.text}>빵 이름</Text>
@@ -206,6 +210,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-SemiBold',
     marginRight: 450,
     marginBottom: 20,
+  },
+  breadImage: {
+    width: 250,
+    height: 250,
   },
   imageText: {
     fontSize: 30,

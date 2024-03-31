@@ -8,42 +8,36 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-/*
-type Bread = {
-  id:Number,
-  name: String,
-  price: Number,
-  stock: Number,
-  imageUrl: String,
-};
-*/
+//이미지 수정중
+
 const EditBreadScreen = ({navigation, route}) => {
+  const {id} = route.params;
   const [breadName, setBreadName] = useState('');
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [breads, setBreads] = useState([]);
-  const {id} = route.params;
 
-  //.get(`http://172.20.10.5:8080/kiosk/bread/${id}`)
   useEffect(() => {
-    axios
-      .get(`http://172.20.10.5:8080/kiosk/bread/${id}`)
-      .then(response => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://192.168.219.106:8080/kiosk/bread/${id}`,
+        );
         const {name, price, stock, imageUrl} = response.data;
         setBreadName(name);
         setPrice(String(price));
         setStock(String(stock));
-        setImageUrl(imageUrl);
-      })
-      .catch(error => {
-        console.error('error : ', error);
-      });
+        setImageUrl(imageUrl.replace('localhost', '192.168.219.106')); // 'localhost'를 호스트 IP로 대체
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
+    fetchData();
   }, [id]);
 
   const handleSave = () => {
     axios
-      .put(`http://172.20.10.5:8080/kiosk/bread/${id}`, {
+      .put(`http://192.168.219.106:8080/kiosk/bread/${id}`, {
         name: breadName,
         price: price,
         stock: stock,
@@ -56,9 +50,10 @@ const EditBreadScreen = ({navigation, route}) => {
         console.error('Error:', error);
       });
   };
+
   const handleDelete = () => {
     axios
-      .delete(`http://172.20.10.5:8080/kiosk/bread/${id}`)
+      .delete(`http://192.168.219.106:8080/kiosk/bread/${id}`)
       .then(response => {
         console.log('Response:', response.data);
         navigation.navigate('ManageBread', {refresh: true});
@@ -67,7 +62,7 @@ const EditBreadScreen = ({navigation, route}) => {
         console.error('Error:', error);
       });
   };
-  //<Image source={{uri: imageUrl}} style={styles.breadImage} />
+
   return (
     <View style={styles.container}>
       <Image source={{uri: imageUrl}} style={styles.breadImage} />
@@ -102,7 +97,6 @@ const EditBreadScreen = ({navigation, route}) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -140,10 +134,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   breadImage: {
-    width: 150,
-    height: 150,
-    marginRight: 50,
-    marginLeft: 40,
+    width: 250,
+    height: 250,
   },
   button: {
     backgroundColor: '#D3705B',

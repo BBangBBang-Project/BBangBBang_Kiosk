@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import {
@@ -10,16 +11,16 @@ import {
   View,
 } from 'react-native';
 
-const PurchaseScreen = ({navigation}) => {
+const PurchaseScreen = () => {
   const [orders, setOrders] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [breads, setBreads] = useState([]);
-  const [count, setCount] = useState(1);
-  const [nextId, setNextId] = useState(1);
+  const navigation = useNavigation();
+  const [orderId, setOrderId] = useState(null);
 
   useEffect(() => {
     axios
-      .get('http://172.20.10.5:8080/kiosk/bread')
+      .get('http://192.168.219.106:8080/kiosk/bread')
       .then(response => {
         setBreads(response.data);
       })
@@ -28,6 +29,7 @@ const PurchaseScreen = ({navigation}) => {
       });
   }, []);
 
+  //장바구니 추가
   const addToOrder = menuItem => {
     const existingIndex = orders.findIndex(item => item.id === menuItem.id);
     if (existingIndex !== -1) {
@@ -39,11 +41,13 @@ const PurchaseScreen = ({navigation}) => {
     }
   };
 
+  //장바구니에서 제외
   const removeFromOrder = menuItemId => {
     const updatedOrders = orders.filter(item => item.id !== menuItemId);
     setOrders(updatedOrders);
   };
 
+  //수량 추가
   const increaseCount = menuItemId => {
     const existingIndex = orders.findIndex(item => item.id === menuItemId);
     if (existingIndex !== -1) {
@@ -52,6 +56,7 @@ const PurchaseScreen = ({navigation}) => {
       setOrders(updatedOrders);
     }
   };
+  //수량 삭제
   const decreaseCount = menuItemId => {
     const existingIndex = orders.findIndex(item => item.id === menuItemId);
     if (existingIndex !== -1) {
@@ -62,38 +67,37 @@ const PurchaseScreen = ({navigation}) => {
       }
     }
   };
-
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
-  };
-
+  //가격 할인 계산. db에는 정가만 들어가도록 하고 프론트에서 할인 가격 계산하도록 함
   const calculateDiscountPrice = price => {
     return (parseInt(price, 10) * 0.7).toFixed(0); // 30% 할인된 가격
   };
 
-  //orderid 고정 문제 해결
+  //주문완료창으로 데이터 보내기
   const sendPayData = () => {
-    const orderId = nextId;
     const orderData = orders.map(item => ({
       order_id: orderId,
       id: item.id,
       count: item.count,
     }));
     axios
-      .post('http://172.20.10.5:8080/kiosk/bread/order', orderData)
+      .post('http://192.168.219.106:8080/kiosk/bread/order', orderData)
       .then(response => {
-        setNextId(prevId => prevId + 1);
+        setOrderId(response.data);
         console.log('Order sent successfully:', response.data);
         setModalVisible(false);
-        navigation.navigate('PurchaseComplete', {orderId: orderId});
+        navigation.navigate('PurchaseComplete', {
+          orderId: response.data,
+        });
       })
       .catch(error => {
         console.error('Error sending order:', error);
       });
   };
 
+  //총 수량 계산
   const totalQuantity = orders.reduce((total, item) => total + item.count, 0);
 
+  //총 가격 계산
   const totalPrice = orders.reduce(
     (total, item) =>
       total +
@@ -101,29 +105,34 @@ const PurchaseScreen = ({navigation}) => {
     0,
   );
 
-  //      <Image source={item.image} style={styles.breadImage} />
-  const renderBreadItem = ({item}) => (
-    <TouchableOpacity style={styles.breadItem} onPress={() => addToOrder(item)}>
-      <View style={styles.breadInfo}>
-        <Image
-          source={require('../assets/images/saltBread.png')}
-          style={styles.breadImage}
-        />
-        <Text style={styles.breadName}>{item.name}</Text>
-        <Text style={styles.breadPrice}>
-          {' '}
-          {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
-        </Text>
-        <Text style={styles.breadDiscountPrice}>
-          {calculateDiscountPrice(item.price)
-            .toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-          원
-        </Text>
-      </View>
-      <Text style={styles.breadStock}>재고: {item.stock}개</Text>
-    </TouchableOpacity>
-  );
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
+  const renderBreadItem = ({item}) => {
+    const imageUrl = item.imageUrl.replace('localhost', '192.168.219.106');
+
+    return (
+      <TouchableOpacity
+        style={styles.breadItem}
+        onPress={() => addToOrder(item)}>
+        <View style={styles.breadInfo}>
+          <Image source={{uri: imageUrl}} style={styles.breadImage} />
+          <Text style={styles.breadName}>{item.name}</Text>
+          <Text style={styles.breadPrice}>
+            {' '}
+            {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
+          </Text>
+          <Text style={styles.breadDiscountPrice}>
+            {calculateDiscountPrice(item.price)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            원
+          </Text>
+        </View>
+        <Text style={styles.breadStock}>재고: {item.stock}개</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const renderOrderItem = ({item}) => (
     <View style={styles.orderItem}>
@@ -195,7 +204,7 @@ const PurchaseScreen = ({navigation}) => {
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate('Main')}
           style={styles.backButton}>
           <Text style={styles.buttonText}>주문취소</Text>
         </TouchableOpacity>
@@ -472,6 +481,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   breadImage: {
+    marginTop: 10,
     width: 150,
     height: 150,
   },

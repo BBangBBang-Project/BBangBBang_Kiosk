@@ -1,18 +1,27 @@
-import React from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const PickupCompleteScreen = ({navigation}) => {
-  const data = [
-    {key: '1', text: '소보로 빵 X 1'},
-    {key: '2', text: '크림 빵 X 2'},
-    {key: '3', text: '크림 빵 X 2'},
-    {key: '4', text: '크림 빵 X 2'},
-  ];
+  const [data, setData] = useState([]);
+
+  //일단은 사용자 한명으로 고정하고 테스트. 추후에 여러 간편비밀번호 사용할 경우 코드 수정
+  useEffect(() => {
+    axios
+      .get(`http://192.168.219.106:8080/kiosk/pick/1234`)
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
   const renderItem = ({item}) => (
-    <Text style={styles.itemText}>{item.text}</Text>
+    <Text style={styles.itemText}>
+      {item.breadName} X {item.quantitySold}
+    </Text>
   );
-
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
@@ -21,7 +30,7 @@ const PickupCompleteScreen = ({navigation}) => {
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={item => item.key}
+          keyExtractor={(item, index) => index.toString()}
           style={styles.itemContainer}
         />
 

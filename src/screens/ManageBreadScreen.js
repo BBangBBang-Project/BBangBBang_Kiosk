@@ -1,3 +1,4 @@
+import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import {
@@ -10,26 +11,22 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const ManageBreadScreen = ({navigation, route}) => {
+const ManageBreadScreen = () => {
   const [breads, setBreads] = useState([]);
-
+  const navigation = useNavigation();
+  const route = useRoute();
   useEffect(() => {
-    const fetchBreads = () => {
-      axios
-        .get('http://172.20.10.5:8080/kiosk/bread')
-        .then(response => {
-          setBreads(response.data);
-        })
-        .catch(error => {
-          console.error('error : ', error);
-        });
+    const fetchBreads = async () => {
+      try {
+        const response = await axios.get(
+          'http://192.168.219.106:8080/kiosk/bread',
+        );
+        setBreads(response.data);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
     };
-
     fetchBreads();
-    //빵 추가하고 넘어갈때 실시간 업데이트 안되는 문제 해결
-    if (route.params && route.params.refresh) {
-      fetchBreads();
-    }
   }, [route.params]);
 
   const handleEditBread = id => {
@@ -41,21 +38,26 @@ const ManageBreadScreen = ({navigation, route}) => {
   style={styles.breadImage}
 />*/
 
-  const renderBreadItem = ({item}) => (
-    <TouchableOpacity onPress={() => handleEditBread(item.id)}>
-      <View style={styles.breadItem}>
-        <Image source={{uri: item.image_path}} style={styles.breadImage} />
-        <View style={styles.breadInfo}>
-          <Text style={styles.breadName}>{item.name}</Text>
-          <Text style={styles.breadPrice}>
-            가격 : {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-            원
-          </Text>
-          <Text style={styles.breadStock}>재고 : {item.stock}개</Text>
+  const renderBreadItem = ({item}) => {
+    // "localhost" 변경
+    const imageUrl = item.imageUrl.replace('localhost', '192.168.219.106');
+
+    return (
+      <TouchableOpacity onPress={() => handleEditBread(item.id)}>
+        <View style={styles.breadItem}>
+          <Image source={{uri: imageUrl}} style={styles.breadImage} />
+          <View style={styles.breadInfo}>
+            <Text style={styles.breadName}>{item.name}</Text>
+            <Text style={styles.breadPrice}>
+              가격 :{' '}
+              {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
+            </Text>
+            <Text style={styles.breadStock}>재고 : {item.stock}개</Text>
+          </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -112,10 +114,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3E3D3',
   },
   breadImage: {
-    width: 150,
+    width: 180,
     height: 150,
-    marginRight: 50,
-    marginLeft: 40,
+    marginRight: 30,
+    marginLeft: 20,
   },
   image: {
     width: 100,
@@ -155,65 +157,3 @@ const styles = StyleSheet.create({
 });
 
 export default ManageBreadScreen;
-
-/*
-type Bread = {
-  id: number;
-  name: string;
-  price: number;
-  stock: number;
-  imageUrl: string;
-};
-const ManageBreadScreen = () => {
-  const [breads, setBreads] = useState<Bread[]>([]);
-
-  useEffect(() => {
-    const fetchBreads = async () => {
-      try {
-        const response = await axios.get(
-          `http://192.168.219.104:8080/kiosk/bread`,
-        );
-        setBreads(response.data);
-      } catch (error) {
-        console.error('Error fetching data: ', error);
-      }
-    };
-    fetchBreads();
-  }, []);
-
-  return (
-    <ScrollView style={styles.container}>
-      {breads.map(bread => (
-        <View key={bread.id} style={styles.breadCard}>
-          <Text style={styles.breadText}>이름 {bread.name}</Text>
-          <Text style={styles.breadText}>가격 {bread.price}</Text>
-          <Text style={styles.breadText}>{bread.stock}</Text>
-          <Image source={{uri: bread.imageUrl}} style={styles.breadImage} />
-          <Text>{bread.imageUrl}</Text>
-        </View>
-      ))}
-    </ScrollView>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 20,
-  },
-  breadCard: {
-    flex: 1,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  breadText: {
-    fontSize: 18,
-    marginBottom: 5,
-  },
-  breadImage: {
-    width: 200,
-    height: 200,
-  },
-});
-export default ManageBreadScreen;
-*/

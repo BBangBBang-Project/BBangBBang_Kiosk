@@ -1,37 +1,29 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-/*
-const data = [
-  {key: '1', text: '소보로 빵 X 1'},
-  {key: '2', text: '크림 빵 X 2'},
-  {key: '3', text: '크림 빵 X 2'},
-  {key: '4', text: '크림 빵 X 2'},
-];
-*/
+
 const PurchaseCompleteScreen = ({navigation, route}) => {
   const [data, setData] = useState([]);
   const {orderId} = route.params;
-  //const [breadName, setBreadName] = useState('');
-  //const [count, setCount] = useState('');
 
   useEffect(() => {
-    axios
-      .get(`http://172.20.10.5:8080/kiosk/bread/order/${orderId}`)
-      .then(response => {
-        const {breadName, quantitySold} = response.data;
-       // setBreadName(breadName);
-        //setCount(quantitySold);
+    const fetchOrderItems = async () => {
+      try {
+        const response = await axios.get(
+          `http://192.168.219.106:8080/kiosk/bread/order/${orderId}`,
+        );
         setData(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+      } catch (error) {
+        console.error('Error fetching order items:', error);
+      }
+    };
+
+    fetchOrderItems();
   }, [orderId]);
 
   const renderItem = ({item}) => (
     <Text style={styles.itemText}>
-      {item.breadName} X {item.quantitySold} {orderId}
+      {item.breadName} X {item.quantitySold}
     </Text>
   );
 
