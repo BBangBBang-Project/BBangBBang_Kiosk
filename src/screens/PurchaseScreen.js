@@ -21,11 +21,7 @@ const PurchaseScreen = () => {
 
   useEffect(() => {
     axios
-<<<<<<< HEAD
-      .get('http://172.20.10.5:8080/kiosk/bread')
-=======
       .get(`http://${MY_IP_ADDRESS}:8080/kiosk/bread`)
->>>>>>> b2d5398 (feature:config)
       .then(response => {
         setBreads(response.data);
       })
@@ -85,11 +81,7 @@ const PurchaseScreen = () => {
       count: item.count,
     }));
     axios
-<<<<<<< HEAD
-      .post('http://172.20.10.5:8080/kiosk/bread/order', orderData)
-=======
       .post(`http://${MY_IP_ADDRESS}:8080/kiosk/bread/order`, orderData)
->>>>>>> b2d5398 (feature:config)
       .then(response => {
         setOrderId(response.data);
         console.log('Order sent successfully:', response.data);
@@ -118,11 +110,7 @@ const PurchaseScreen = () => {
     setModalVisible(!modalVisible);
   };
   const renderBreadItem = ({item}) => {
-<<<<<<< HEAD
-    const imageUrl = item.imageUrl.replace('localhost', '172.20.10.5');
-=======
     const imageUrl = item.imageUrl.replace('localhost', MY_IP_ADDRESS);
->>>>>>> b2d5398 (feature:config)
 
     return (
       <TouchableOpacity

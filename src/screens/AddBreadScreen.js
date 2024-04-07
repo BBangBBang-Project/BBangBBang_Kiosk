@@ -95,11 +95,7 @@ const AddBreadScreen = () => {
 
     try {
       const response = await axios.post(
-<<<<<<< HEAD
-        'http://172.20.10.5:8080/kiosk/bread',
-=======
         `http://${MY_IP_ADDRESS}:8080/kiosk/bread`,
->>>>>>> b2d5398 (feature:config)
         formData,
         {
           headers: {
