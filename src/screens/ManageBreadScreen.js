@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { MY_IP_ADDRESS } from '../config/config';
 
 const ManageBreadScreen = () => {
   const [breads, setBreads] = useState([]);
@@ -18,7 +19,9 @@ const ManageBreadScreen = () => {
   useEffect(() => {
     const fetchBreads = async () => {
       try {
-        const response = await axios.get('http://172.20.10.5:8080/kiosk/bread');
+        const response = await axios.get(
+          `http://${MY_IP_ADDRESS}:8080/kiosk/bread`,
+        );
         setBreads(response.data);
       } catch (error) {
         console.error('Error fetching data: ', error);
@@ -38,7 +41,7 @@ const ManageBreadScreen = () => {
 
   const renderBreadItem = ({item}) => {
     // "localhost" 변경
-    const imageUrl = item.imageUrl.replace('localhost', '172.20.10.5');
+    const imageUrl = item.imageUrl.replace('localhost', MY_IP_ADDRESS);
 
     return (
       <TouchableOpacity onPress={() => handleEditBread(item.id)}>

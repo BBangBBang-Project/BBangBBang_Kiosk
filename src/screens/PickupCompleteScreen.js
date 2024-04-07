@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { MY_IP_ADDRESS } from '../config/config';
 
 const PickupCompleteScreen = ({navigation}) => {
   const [data, setData] = useState([]);
@@ -8,7 +9,7 @@ const PickupCompleteScreen = ({navigation}) => {
   //일단은 사용자 한명으로 고정하고 테스트. 추후에 여러 간편비밀번호 사용할 경우 코드 수정
   useEffect(() => {
     axios
-      .get(`http://172.20.10.5:8080/kiosk/pick/0000`)
+      .get(`http://${MY_IP_ADDRESS}:8080/kiosk/pick/0000`)
       .then(response => {
         setData(response.data);
       })
