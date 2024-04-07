@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -9,50 +11,175 @@ import {
   View,
 } from 'react-native';
 
-const PurchaseScreen = ({navigation}) => {
+const PurchaseScreen = () => {
   const [orders, setOrders] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [breads, setBreads] = useState([]);
+  const navigation = useNavigation();
+  const [orderId, setOrderId] = useState(null);
 
+  useEffect(() => {
+    axios
+      .get('http://192.168.219.106:8080/kiosk/bread')
+      .then(response => {
+        setBreads(response.data);
+      })
+      .catch(error => {
+        console.error('error : ', error);
+      });
+  }, []);
 
+  //장바구니 추가
   const addToOrder = menuItem => {
-    setOrders([...orders, menuItem]);
+    const existingIndex = orders.findIndex(item => item.id === menuItem.id);
+    if (existingIndex !== -1) {
+      const updatedOrders = [...orders];
+      updatedOrders[existingIndex].count++;
+      setOrders(updatedOrders);
+    } else {
+      setOrders([...orders, {...menuItem, count: 1}]);
+    }
   };
+
+  //장바구니에서 제외
+  const removeFromOrder = menuItemId => {
+    const updatedOrders = orders.filter(item => item.id !== menuItemId);
+    setOrders(updatedOrders);
+  };
+
+  //수량 추가
+  const increaseCount = menuItemId => {
+    const existingIndex = orders.findIndex(item => item.id === menuItemId);
+    if (existingIndex !== -1) {
+      const updatedOrders = [...orders];
+      updatedOrders[existingIndex].count++;
+      setOrders(updatedOrders);
+    }
+  };
+  //수량 삭제
+  const decreaseCount = menuItemId => {
+    const existingIndex = orders.findIndex(item => item.id === menuItemId);
+    if (existingIndex !== -1) {
+      const updatedOrders = [...orders];
+      if (updatedOrders[existingIndex].count > 1) {
+        updatedOrders[existingIndex].count--;
+        setOrders(updatedOrders);
+      }
+    }
+  };
+  //가격 할인 계산. db에는 정가만 들어가도록 하고 프론트에서 할인 가격 계산하도록 함
+  const calculateDiscountPrice = price => {
+    return (parseInt(price, 10) * 0.7).toFixed(0); // 30% 할인된 가격
+  };
+
+  //주문완료창으로 데이터 보내기
+  const sendPayData = () => {
+    const orderData = orders.map(item => ({
+      order_id: orderId,
+      id: item.id,
+      count: item.count,
+    }));
+    axios
+      .post('http://192.168.219.106:8080/kiosk/bread/order', orderData)
+      .then(response => {
+        setOrderId(response.data);
+        console.log('Order sent successfully:', response.data);
+        setModalVisible(false);
+        navigation.navigate('PurchaseComplete', {
+          orderId: response.data,
+        });
+      })
+      .catch(error => {
+        console.error('Error sending order:', error);
+      });
+  };
+
+  //총 수량 계산
+  const totalQuantity = orders.reduce((total, item) => total + item.count, 0);
+
+  //총 가격 계산
+  const totalPrice = orders.reduce(
+    (total, item) =>
+      total +
+      parseInt(calculateDiscountPrice(item.price, item.count), 10) * item.count,
+    0,
+  );
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
+  const renderBreadItem = ({item}) => {
+    const imageUrl = item.imageUrl.replace('localhost', '192.168.219.106');
 
-  const breads = [
-    { id: '1', name: '소보로빵', price: '2000원', discountPrice: '1500원', stock : 10, image: require('../assets/images/soboroBread.png') },
-    { id: '2', name: '소금빵', price: '3000원', discountPrice: '2500원', stock: 15, image: require('../assets/images/saltBread.png') },
-    { id: '3', name: '바게트', price: '2000원', discountPrice: '1500원', stock: 5, image: require('../assets/images/baguette.png') },
-    { id: '4', name: '소세지빵', price: '4000원', discountPrice: '2000원', stock: 5, image: require('../assets/images/sausageBread.png') },
-    { id: '5', name: '바게트', price: '2000원', discountPrice: '1500원', stock: 5, image: require('../assets/images/baguette.png') },
-    { id: '6', name: '바게트', price: '2000원', discountPrice: '1500원', stock: 5, image: require('../assets/images/baguette.png') },
-    { id: '7', name: '바게트', price: '2000원', discountPrice: '1500원', stock: 5, image: require('../assets/images/baguette.png') },
-    { id: '8', name: '소세지빵', price: '4000원', discountPrice: '2000원', stock: 5, image: require('../assets/images/sausageBread.png') },
-    { id: '9', name: '바게트', price: '2000원', discountPrice: '1500원', stock: 5, image: require('../assets/images/baguette.png') },
-    { id: '10', name: '바게트', price: '2000원', discountPrice: '1500원', stock: 5, image: require('../assets/images/baguette.png') },
-  ];
-
-
-  const renderBreadItem = ({ item }) => (
-    <TouchableOpacity style={styles.breadItem} onPress={() => addToOrder(item)}>
-      <Image source={item.image} style={styles.breadImage} />
-      <View style={styles.breadInfo}>
-        <Text style={styles.breadName}>{item.name}</Text>
-        <Text style={styles.breadPrice}> {item.price}</Text>
-        <Text style={styles.breadDiscountPrice}>{item.discountPrice}</Text>
+    return (
+      <TouchableOpacity
+        style={styles.breadItem}
+        onPress={() => addToOrder(item)}>
+        <View style={styles.breadInfo}>
+          <Image source={{uri: imageUrl}} style={styles.breadImage} />
+          <Text style={styles.breadName}>{item.name}</Text>
+          <Text style={styles.breadPrice}>
+            {' '}
+            {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
+          </Text>
+          <Text style={styles.breadDiscountPrice}>
+            {calculateDiscountPrice(item.price)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            원
+          </Text>
+        </View>
         <Text style={styles.breadStock}>재고: {item.stock}개</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderOrderItem = ({item}) => (
+    <View style={styles.orderItem}>
+      <View style={styles.orderItemDetails}>
+        <Text style={styles.orderItemName}>{item.name}</Text>
+        <View style={styles.orderItemQuantity}>
+          <TouchableOpacity onPress={() => decreaseCount(item.id)}>
+            <Text style={styles.quantityButton}> - </Text>
+          </TouchableOpacity>
+          <Text style={styles.quantityText}> {item.count} </Text>
+          <TouchableOpacity onPress={() => increaseCount(item.id)}>
+            <Text style={styles.quantityButton}> + </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </TouchableOpacity>
+      <Text style={styles.orderItemPrice}>
+        {(
+          parseInt(calculateDiscountPrice(item.price, item.count), 10) *
+          item.count
+        )
+          .toFixed(0)
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+        원
+      </Text>
+      <TouchableOpacity onPress={() => removeFromOrder(item.id)}>
+        <Text style={styles.cancelButton}> 삭제 </Text>
+      </TouchableOpacity>
+    </View>
   );
 
-  const renderOrderItem = ({ item }) => (
-    <View style={styles.orderItem}>
-      <Text>{item.name}</Text>
-      <Text>{item.discountPrice}</Text>
-      <Text>{item.quantity}</Text>
+  const renderCheckItem = ({item}) => (
+    <View style={styles.orderCheckItem}>
+      <View style={styles.orderCheckDetails}>
+        <Text style={styles.orderCheckName}>{item.name}</Text>
+        <View style={styles.orderCheckQuantity}>
+          <Text style={styles.quantityCheckText}> {item.count}개 </Text>
+        </View>
+      </View>
+      <Text style={styles.orderCheckPrice}>
+        {(
+          parseInt(calculateDiscountPrice(item.price, item.count), 10) *
+          item.count
+        )
+          .toFixed(0)
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+        원
+      </Text>
     </View>
   );
 
@@ -63,12 +190,12 @@ const PurchaseScreen = ({navigation}) => {
         <FlatList
           data={breads}
           renderItem={renderBreadItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
           numColumns={3}
         />
       </View>
       <View style={styles.orderContainer}>
-        <Text style={styles.orderTitle}>주문 내역</Text>
+        <Text style={styles.orderTitle}>주문 목록</Text>
         <FlatList
           data={orders}
           renderItem={renderOrderItem}
@@ -77,7 +204,7 @@ const PurchaseScreen = ({navigation}) => {
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate('Main')}
           style={styles.backButton}>
           <Text style={styles.buttonText}>주문취소</Text>
         </TouchableOpacity>
@@ -93,15 +220,24 @@ const PurchaseScreen = ({navigation}) => {
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
-        }}
-      >
+        }}>
         <View style={styles.modalContainer}>
-          <Text style={styles.orderTitle}>주문 내역</Text>
-          <FlatList
-            data={orders}
-            renderItem={renderOrderItem}
-            keyExtractor={(item, index) => index.toString()}
-          />
+          <Text style={styles.orderCheckTitle}>주문 내역</Text>
+          <View style={styles.orderCheckContainer}>
+            <FlatList
+              data={orders}
+              renderItem={renderCheckItem}
+              keyExtractor={(item, index) => index.toString()}
+            />
+            <View style={styles.totalContainer}>
+              <Text style={styles.totalText}>총 수량 : {totalQuantity}개</Text>
+              <Text style={styles.totalText}>
+                총 가격 :{' '}
+                {totalPrice.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
+              </Text>
+            </View>
+          </View>
+
           <View style={styles.modalButtonContainer}>
             <TouchableOpacity
               onPress={() => {
@@ -110,11 +246,7 @@ const PurchaseScreen = ({navigation}) => {
               style={styles.modalButton}>
               <Text style={styles.modalText}>취소하기</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-               onPress={() => {
-                navigation.navigate('PurchaseComplete');
-              }}
-              style={styles.modalButton}>
+            <TouchableOpacity onPress={sendPayData} style={styles.modalButton}>
               <Text style={styles.modalText}>결제하기</Text>
             </TouchableOpacity>
           </View>
@@ -138,7 +270,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   modalContainer: {
-    width : '90%',
+    width: '90%',
     height: '80%',
     backgroundColor: 'white',
     borderRadius: 10,
@@ -148,6 +280,16 @@ const styles = StyleSheet.create({
     padding: 20,
     marginLeft: 40,
     marginTop: 80,
+  },
+  totalContainer: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  totalText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 30,
+    textAlign: 'center',
+    color: 'black',
   },
   modalButtonContainer: {
     justifyContent: 'center',
@@ -187,7 +329,118 @@ const styles = StyleSheet.create({
   orderTitle: {
     fontSize: 30,
     fontFamily: 'Pretendard-Bold',
+    padding: 10,
     marginBottom: 5,
+    color: 'black',
+  },
+
+  orderCheckContainer: {
+    borderWidth: 3,
+    borderColor: '#F3E3D3',
+    borderRadius: 10,
+    marginBottom: 10,
+    padding: 10,
+    width: '100%',
+    height: '80%',
+    textAlign: 'center',
+  },
+  orderCheckTitle: {
+    fontSize: 40,
+    fontFamily: 'Pretendard-Bold',
+    color: 'black',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  orderCheckName: {
+    fontSize: 35,
+    fontFamily: 'Pretendard-SemiBold',
+    color: 'black',
+    width: '50%',
+    textAlign: 'center',
+    marginRight: 30,
+  },
+  orderCheckPrice: {
+    fontSize: 35,
+    fontFamily: 'Pretendard-SemiBold',
+    color: 'black',
+    width: '30%',
+    textAlign: 'center',
+  },
+  quantityCheckText: {
+    fontSize: 35,
+    fontFamily: 'Pretendard-SemiBold',
+    color: 'black',
+    width: '90%',
+    textAlign: 'center',
+  },
+  orderItem: {
+    flexDirection: 'row',
+    borderBottomWidth: 2,
+    borderBottomColor: 'gray',
+    padding: 10,
+    alignContent: 'center',
+    justifyContent: 'space-around',
+  },
+  orderCheckItem: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: 'gray',
+    padding: 30,
+    justifyContent: 'space-around',
+  },
+  orderItemName: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 25,
+    marginRight: 20,
+    marginLeft: 20,
+    color: 'black',
+    width: '25%',
+    textAlign: 'center',
+  },
+  orderItemDetails: {
+    flexDirection: 'row',
+  },
+  orderItemQuantity: {
+    flexDirection: 'row',
+  },
+  orderCheckDetails: {
+    flexDirection: 'row',
+  },
+
+  quantityButton: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 30,
+    borderColor: 'black',
+    borderRadius: 3,
+    padding: 2,
+    color: 'black',
+    backgroundColor: '#D9D9D9',
+    textAlign: 'center',
+  },
+  quantityText: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 25,
+    color: 'black',
+    width: '25%',
+    textAlign: 'center',
+    margin: 5,
+  },
+  orderItemPrice: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 25,
+    color: 'black',
+    width: '20%',
+    textAlign: 'center',
+  },
+  cancelButton: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 25,
+    borderWidth: 3,
+    textAlign: 'center',
+    borderRadius: 5,
+    borderColor: '#D3705B',
+    padding: 2,
+    color: '#D3705B',
   },
   buttonContainer: {
     justifyContent: 'center',
@@ -203,7 +456,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     marginLeft: 20,
   },
-  modalButton:{
+  modalButton: {
     backgroundColor: 'white',
     paddingVertical: 10,
     paddingHorizontal: 50,
@@ -228,8 +481,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   breadImage: {
-    width: 200,
-    height: 200,
+    marginTop: 10,
+    width: 150,
+    height: 150,
   },
   breadItem: {
     backgroundColor: '#F3E3D3',
@@ -240,6 +494,8 @@ const styles = StyleSheet.create({
   },
   breadInfo: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   breadName: {
     fontFamily: 'Pretendard-Bold',
@@ -267,11 +523,10 @@ const styles = StyleSheet.create({
   breadStock: {
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 20,
-    color: 'black',
+    color: '#D3705B',
     textAlign: 'right',
     marginRight: 10,
   },
-
 });
 
 export default PurchaseScreen;

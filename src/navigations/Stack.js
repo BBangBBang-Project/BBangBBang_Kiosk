@@ -1,6 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import AddBreadScreen from '../screens/AddBreadScreen';
+import EditBreadScreen from '../screens/EditBreadScreen';
 import MainScreen from '../screens/MainScreen';
 import ManageBreadScreen from '../screens/ManageBreadScreen';
 import ManageScreen from '../screens/ManageScreen';
@@ -19,8 +20,7 @@ const StackNavigation = () => {
     <Stack.Navigator
       initialRouteName="Main"
       screenOptions={{
-        headerStyle: {
-        },
+        headerStyle: {},
         headerTintColor: 'black',
       }}>
       <Stack.Screen name="Main" component={MainScreen} options={{title: ''}} />
@@ -72,6 +72,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name="ManageBread"
         component={ManageBreadScreen}
+        options={{title: ''}}
+      />
+      <Stack.Screen
+        name="EditBread"
+        component={EditBreadScreen}
         options={{title: ''}}
       />
     </Stack.Navigator>

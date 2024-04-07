@@ -1,16 +1,30 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const PurchaseCompleteScreen = ({navigation}) => {
-  const data = [
-    {key: '1', text: '소보로 빵 X 1'},
-    {key: '2', text: '크림 빵 X 2'},
-    {key: '3', text: '크림 빵 X 2'},
-    {key: '4', text: '크림 빵 X 2'},
-  ];
+const PurchaseCompleteScreen = ({navigation, route}) => {
+  const [data, setData] = useState([]);
+  const {orderId} = route.params;
+
+  useEffect(() => {
+    const fetchOrderItems = async () => {
+      try {
+        const response = await axios.get(
+          `http://192.168.219.106:8080/kiosk/bread/order/${orderId}`,
+        );
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching order items:', error);
+      }
+    };
+
+    fetchOrderItems();
+  }, [orderId]);
 
   const renderItem = ({item}) => (
-    <Text style={styles.itemText}>{item.text}</Text>
+    <Text style={styles.itemText}>
+      {item.breadName} X {item.quantitySold}
+    </Text>
   );
 
   return (
@@ -21,7 +35,7 @@ const PurchaseCompleteScreen = ({navigation}) => {
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={item => item.key}
+          keyExtractor={(item, index) => index.toString()}
           style={styles.itemContainer}
         />
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -85,6 +85,5 @@ const styles = StyleSheet.create({
     marginLeft: 25,
   },
 });
-
 
 export default PickupScreen;
