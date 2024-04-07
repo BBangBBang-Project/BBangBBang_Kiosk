@@ -94,7 +94,7 @@ const AddBreadScreen = () => {
 
     try {
       const response = await axios.post(
-        'http://192.168.219.106:8080/kiosk/bread',
+        'http://172.20.10.5:8080/kiosk/bread',
         formData,
         {
           headers: {
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#F3E3D3',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -196,13 +196,14 @@ const styles = StyleSheet.create({
   input: {
     width: '70%',
     height: 70,
-    borderBottomWidth: 1,
     borderColor: 'gray',
+    borderRadius: 10,
     marginBottom: 30,
     fontFamily: 'Pretendard-SemiBold',
-    backgroundColor: '#F3E3D3',
+    backgroundColor: 'white',
     fontSize: 30,
     padding: 10,
+    textAlign: 'center',
   },
   text: {
     fontSize: 30,
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
   },
   imageText: {
     fontSize: 30,
-    color: '#D3705B',
+    color: 'black',
     fontFamily: 'Pretendard-SemiBold',
     textAlign: 'center',
   },

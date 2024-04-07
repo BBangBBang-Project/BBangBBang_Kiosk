@@ -23,31 +23,36 @@ const StackNavigation = () => {
         headerStyle: {},
         headerTintColor: 'black',
       }}>
-      <Stack.Screen name="Main" component={MainScreen} options={{title: ''}} />
+      <Stack.Screen
+        name="Main"
+        component={MainScreen}
+        options={{title: '', headerStyle: {backgroundColor: '#F3E3D3'}}}
+      />
       <Stack.Screen
         name="Purchase"
         component={PurchaseScreen}
-        options={{title: ''}}
+        options={{title: '', headerStyle: {backgroundColor: 'white'}}}
       />
       <Stack.Screen
         name="Pickup"
         component={PickupScreen}
-        options={{title: ''}}
+        options={{title: '', headerStyle: {backgroundColor: '#F3E3D3'}}}
       />
       <Stack.Screen
         name="Manage"
         component={ManageScreen}
-        options={{title: ''}}
+        options={{title: '', headerStyle: {backgroundColor: '#F3E3D3'}}}
       />
       <Stack.Screen
         name="AddBread"
         component={AddBreadScreen}
-        options={{title: ''}}
+        options={{title: '', headerStyle: {backgroundColor: '#F3E3D3'}}}
+
       />
       <Stack.Screen
         name="NoPassword"
         component={NoPassWordScreen}
-        options={{title: ''}}
+        options={{title: '', headerStyle: {backgroundColor: '#F3E3D3'}}}
       />
       <Stack.Screen
         name="NoReservation"
@@ -57,12 +62,12 @@ const StackNavigation = () => {
       <Stack.Screen
         name="PickupComplete"
         component={PickupCompleteScreen}
-        options={{title: ''}}
+        options={{title: '', headerStyle: {backgroundColor: '#F3E3D3'}}}
       />
       <Stack.Screen
         name="PurchaseComplete"
         component={PurchaseCompleteScreen}
-        options={{title: ''}}
+        options={{title: '', headerStyle: {backgroundColor: '#F3E3D3'}}}
       />
       <Stack.Screen
         name="Recommedation"

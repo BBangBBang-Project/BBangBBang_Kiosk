@@ -10,7 +10,7 @@ const PurchaseCompleteScreen = ({navigation, route}) => {
     const fetchOrderItems = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.219.106:8080/kiosk/bread/order/${orderId}`,
+          `http://172.20.10.5:8080/kiosk/bread/order/${orderId}`,
         );
         setData(response.data);
       } catch (error) {

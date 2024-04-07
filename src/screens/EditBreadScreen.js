@@ -21,13 +21,13 @@ const EditBreadScreen = ({navigation, route}) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.219.106:8080/kiosk/bread/${id}`,
+          `http://172.20.10.5:8080/kiosk/bread/${id}`,
         );
         const {name, price, stock, imageUrl} = response.data;
         setBreadName(name);
         setPrice(String(price));
         setStock(String(stock));
-        setImageUrl(imageUrl.replace('localhost', '192.168.219.106')); // 'localhost'를 호스트 IP로 대체
+        setImageUrl(imageUrl.replace('localhost', '172.20.10.5')); // 'localhost'를 호스트 IP로 대체
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
@@ -37,7 +37,7 @@ const EditBreadScreen = ({navigation, route}) => {
 
   const handleSave = () => {
     axios
-      .put(`http://192.168.219.106:8080/kiosk/bread/${id}`, {
+      .put(`http://172.20.10.5:8080/kiosk/bread/${id}`, {
         name: breadName,
         price: price,
         stock: stock,
@@ -53,7 +53,7 @@ const EditBreadScreen = ({navigation, route}) => {
 
   const handleDelete = () => {
     axios
-      .delete(`http://192.168.219.106:8080/kiosk/bread/${id}`)
+      .delete(`http://172.20.10.5:8080/kiosk/bread/${id}`)
       .then(response => {
         console.log('Response:', response.data);
         navigation.navigate('ManageBread', {refresh: true});
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#F3E3D3',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -118,20 +118,22 @@ const styles = StyleSheet.create({
   input: {
     width: '70%',
     height: 70,
-    borderBottomWidth: 1,
+    borderRadius: 10,
     borderColor: 'gray',
     marginBottom: 30,
     fontFamily: 'Pretendard-SemiBold',
-    backgroundColor: '#F3E3D3',
-    fontSize: 30,
+    backgroundColor: 'white',
+    fontSize: 35,
     padding: 10,
+    textAlign: 'center',
   },
   text: {
-    fontSize: 30,
+    fontSize: 35,
     color: 'black',
     fontFamily: 'Pretendard-SemiBold',
     marginRight: 450,
     marginBottom: 20,
+    textAlign: 'center',
   },
   breadImage: {
     width: 250,
