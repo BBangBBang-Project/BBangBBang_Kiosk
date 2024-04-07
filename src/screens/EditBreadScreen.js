@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { MY_IP_ADDRESS } from '../config/config';
 //이미지 수정중
 
 const EditBreadScreen = ({navigation, route}) => {
@@ -21,13 +22,13 @@ const EditBreadScreen = ({navigation, route}) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.219.106:8080/kiosk/bread/${id}`,
+          `http://${MY_IP_ADDRESS}:8080/kiosk/bread/${id}`,
         );
         const {name, price, stock, imageUrl} = response.data;
         setBreadName(name);
         setPrice(String(price));
         setStock(String(stock));
-        setImageUrl(imageUrl.replace('localhost', '192.168.219.106')); // 'localhost'를 호스트 IP로 대체
+        setImageUrl(imageUrl.replace('localhost', MY_IP_ADDRESS)); // 'localhost'를 호스트 IP로 대체
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
@@ -37,7 +38,7 @@ const EditBreadScreen = ({navigation, route}) => {
 
   const handleSave = () => {
     axios
-      .put(`http://192.168.219.106:8080/kiosk/bread/${id}`, {
+      .put(`http://${MY_IP_ADDRESS}:8080/kiosk/bread/${id}`, {
         name: breadName,
         price: price,
         stock: stock,
@@ -53,7 +54,7 @@ const EditBreadScreen = ({navigation, route}) => {
 
   const handleDelete = () => {
     axios
-      .delete(`http://192.168.219.106:8080/kiosk/bread/${id}`)
+      .delete(`http://${MY_IP_ADDRESS}:8080/kiosk/bread/${id}`)
       .then(response => {
         console.log('Response:', response.data);
         navigation.navigate('ManageBread', {refresh: true});

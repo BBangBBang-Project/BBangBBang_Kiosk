@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { MY_IP_ADDRESS } from '../config/config';
 
 const PurchaseCompleteScreen = ({navigation, route}) => {
   const [data, setData] = useState([]);
@@ -10,7 +11,7 @@ const PurchaseCompleteScreen = ({navigation, route}) => {
     const fetchOrderItems = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.219.106:8080/kiosk/bread/order/${orderId}`,
+          `http://${MY_IP_ADDRESS}:8080/kiosk/bread/order/${orderId}`,
         );
         setData(response.data);
       } catch (error) {

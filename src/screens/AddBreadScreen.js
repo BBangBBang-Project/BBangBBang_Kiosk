@@ -17,6 +17,7 @@ import {
 } from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { MY_IP_ADDRESS } from '../config/config';
 const AddBreadScreen = () => {
   const [breadName, setBreadName] = useState('');
   const [price, setPrice] = useState('');
@@ -94,7 +95,7 @@ const AddBreadScreen = () => {
 
     try {
       const response = await axios.post(
-        'http://192.168.219.106:8080/kiosk/bread',
+        `http://${MY_IP_ADDRESS}:8080/kiosk/bread`,
         formData,
         {
           headers: {

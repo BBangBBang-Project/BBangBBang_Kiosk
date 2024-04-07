@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { MY_IP_ADDRESS } from '../config/config';
 
 const PurchaseScreen = () => {
   const [orders, setOrders] = useState([]);
@@ -20,7 +21,7 @@ const PurchaseScreen = () => {
 
   useEffect(() => {
     axios
-      .get('http://192.168.219.106:8080/kiosk/bread')
+      .get(`http://${MY_IP_ADDRESS}:8080/kiosk/bread`)
       .then(response => {
         setBreads(response.data);
       })
@@ -80,7 +81,7 @@ const PurchaseScreen = () => {
       count: item.count,
     }));
     axios
-      .post('http://192.168.219.106:8080/kiosk/bread/order', orderData)
+      .post(`http://${MY_IP_ADDRESS}:8080/kiosk/bread/order`, orderData)
       .then(response => {
         setOrderId(response.data);
         console.log('Order sent successfully:', response.data);
@@ -109,7 +110,7 @@ const PurchaseScreen = () => {
     setModalVisible(!modalVisible);
   };
   const renderBreadItem = ({item}) => {
-    const imageUrl = item.imageUrl.replace('localhost', '192.168.219.106');
+    const imageUrl = item.imageUrl.replace('localhost', MY_IP_ADDRESS);
 
     return (
       <TouchableOpacity
