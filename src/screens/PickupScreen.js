@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -18,10 +18,10 @@ const PickupScreen = ({navigation}) => {
   };
 
   const handleConfirm = () => {
-    if (password === '1234') {
+    if (password === '0000') {
       navigation.navigate('PickupComplete');
     } else {
-      navigation.navigate('NoReservation');
+      navigation.navigate('NoPassword');
     }
   };
 

@@ -18,9 +18,7 @@ const ManageBreadScreen = () => {
   useEffect(() => {
     const fetchBreads = async () => {
       try {
-        const response = await axios.get(
-          'http://192.168.219.106:8080/kiosk/bread',
-        );
+        const response = await axios.get('http://172.20.10.5:8080/kiosk/bread');
         setBreads(response.data);
       } catch (error) {
         console.error('Error fetching data: ', error);
@@ -40,7 +38,7 @@ const ManageBreadScreen = () => {
 
   const renderBreadItem = ({item}) => {
     // "localhost" 변경
-    const imageUrl = item.imageUrl.replace('localhost', '192.168.219.106');
+    const imageUrl = item.imageUrl.replace('localhost', '172.20.10.5');
 
     return (
       <TouchableOpacity onPress={() => handleEditBread(item.id)}>
