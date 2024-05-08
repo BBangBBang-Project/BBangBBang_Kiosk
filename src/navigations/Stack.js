@@ -82,7 +82,7 @@ const StackNavigation = () => {
       <Stack.Screen
         name="EditBread"
         component={EditBreadScreen}
-        options={{title: ''}}
+        options={{title: '', headerStyle: {backgroundColor: '#F3E3D3'}}}
       />
     </Stack.Navigator>
   );

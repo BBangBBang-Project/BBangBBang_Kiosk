@@ -11,6 +11,7 @@ import {
   View
 } from 'react-native';
 import { MY_IP_ADDRESS } from '../config/config';
+import { useResult } from '../service/ResultContext';
 
 const PurchaseScreen = () => {
   const [orders, setOrders] = useState([]);
@@ -18,6 +19,7 @@ const PurchaseScreen = () => {
   const [breads, setBreads] = useState([]);
   const navigation = useNavigation();
   const [orderId, setOrderId] = useState(null);
+  const {result, setResult} = useResult();
 
   useEffect(() => {
     axios
@@ -27,18 +29,55 @@ const PurchaseScreen = () => {
       })
       .catch(error => {
         console.error('error : ', error);
-      });
+      }); 
   }, []);
+
+  useEffect(() => {
+      // console.log(`result가 변경되었습니다: ${result}`);
+
+      if(result == "목록을 확인하고 결제를 원하시면 말씀해주세요."){
+        toggleModal();
+      }else if(result == "결제가 완료 되었습니다. 빵을 픽업 해주세요."){
+        sendPayData();
+      }
+      else{
+        //메뉴를 담는 과정.
+        const menuItem = breads.find(bread => result.includes(bread.name));
+
+
+        if (menuItem) {
+          const existingIndex = orders.findIndex(order => order.id === menuItem.id);
+
+          if (existingIndex !== -1) {
+            const updatedOrders = [...orders];
+            updatedOrders[existingIndex].count++;
+            setOrders(updatedOrders);
+          } else {
+            setOrders([...orders, { ...menuItem, count: 1 }]);
+          }
+        } else {
+          console.log('해당하는 메뉴 이름의 빵이 없습니다.');
+        }
+      }
+      
+  }, [result]); // 의존성 배열에 result를 추가
 
   //장바구니 추가
   const addToOrder = menuItem => {
     const existingIndex = orders.findIndex(item => item.id === menuItem.id);
-    if (existingIndex !== -1) {
-      const updatedOrders = [...orders];
-      updatedOrders[existingIndex].count++;
-      setOrders(updatedOrders);
+    const availableAddStock = menuItem.stock - (existingIndex !== -1 ? orders[existingIndex].count : 0);
+
+    //주문목록에 추가하는 빵의 수량이 db에 있는 빵 수량을 넘어가지 않도록 함
+    if (availableAddStock > 0) {
+      if (existingIndex !== -1) {
+        const updatedOrders = [...orders];
+        updatedOrders[existingIndex].count++;
+        setOrders(updatedOrders);
+      } else {
+        setOrders([...orders, {...menuItem, count: 1}]);
+      }
     } else {
-      setOrders([...orders, {...menuItem, count: 1}]);
+      alert('재고가 부족합니다.');
     }
   };
 
@@ -110,7 +149,13 @@ const PurchaseScreen = () => {
     setModalVisible(!modalVisible);
   };
   const renderBreadItem = ({item}) => {
+    let soldoutText = '';
+
+    if (item.stock === 0) {
+      soldoutText='SOLD OUT';
+    }
     const imageUrl = item.imageUrl.replace('localhost', MY_IP_ADDRESS);
+
 
     return (
       <TouchableOpacity
@@ -129,6 +174,7 @@ const PurchaseScreen = () => {
               .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
             원
           </Text>
+          <Text style={styles.breadDiscountPrice}>{soldoutText}</Text>
         </View>
         <Text style={styles.breadStock}>재고: {item.stock}개</Text>
       </TouchableOpacity>
@@ -527,6 +573,14 @@ const styles = StyleSheet.create({
     color: '#D3705B',
     textAlign: 'right',
     marginRight: 10,
+  },
+  soldOut: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 20,
+    marginBottom: 5,
+    color: 'red',
+    marginLeft: 5,
+    textAlign: 'center',
   },
 });
 

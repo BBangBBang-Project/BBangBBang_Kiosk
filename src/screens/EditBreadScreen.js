@@ -66,7 +66,9 @@ const EditBreadScreen = ({navigation, route}) => {
 
   return (
     <View style={styles.container}>
-      <Image source={{uri: imageUrl}} style={styles.breadImage} />
+         {imageUrl !== '' && (
+        <Image source={{uri: imageUrl}} style={styles.breadImage} />
+      )}
       <Text style={styles.text}>빵 이름</Text>
       <TextInput
         style={styles.input}

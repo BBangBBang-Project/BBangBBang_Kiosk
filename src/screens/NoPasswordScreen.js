@@ -8,7 +8,7 @@ const NoPassWordScreen = ({navigation}) => {
       <View style={styles.textContainer}>
         <TouchableOpacity
           style={styles.xButton}
-          onPress={() => navigation.navigate('Purchase')}>
+          onPress={() => navigation.navigate('Main')}>
           <Icon name="x-circle" size={70} color="black" />
         </TouchableOpacity>
         <Image
