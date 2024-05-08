@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useCallback } from "react";
 import Voice from "@react-native-voice/voice";
 import axios from "axios";
+import React, { useCallback, useEffect, useState } from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Tts from "react-native-tts";
+import Icon from 'react-native-vector-icons/FontAwesome6';
 import { MY_IP_ADDRESS } from "../config/config";
-import { View,Text,TouchableOpacity, Image } from "react-native";
 import { useResult } from "./ResultContext";
-
 
 const VoiceInput = ({ onResult }) => {
   const {result, setResult} = useResult();
@@ -126,10 +126,11 @@ const VoiceInput = ({ onResult }) => {
     }
   };
 
+
   return (
     <View style={{alignItems: 'center',margin:20}}>
         <TouchableOpacity 
-        style={{marginTop:30}} 
+        style={styles.button} 
         onPress={() => {
           if (isRecording) {
             stopRecording();
@@ -139,14 +140,15 @@ const VoiceInput = ({ onResult }) => {
             setIsRecording(true);
           }
         }}>
-            <Image style={{width: 50,height: 50}} 
-            source={require('../assets/images/button.png')}></Image>
+          <Icon name="microphone" size={60} color="#D3705B" />
         </TouchableOpacity>
     </View>
 );
 };
 
+const styles = StyleSheet.create({
+  button: {
+    //아직 안 쓰긴 하는데 나중에 디자인 수정할 수도 있으니까 냅둠
+  },
+});
 export default VoiceInput;
-
-
-

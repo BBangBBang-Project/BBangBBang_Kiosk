@@ -1,16 +1,18 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { Image, LogBox, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/MaterialIcons';
 import VoiceInput from '../service/VoiceInput';
-import Tts from 'react-native-tts';
+
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const MainScreen = ({navigation}) => {
-
-  const handleVoiceResult = (data) => {
-    if(data == "현재 구매할 수 있는 목록입니다. 어떤 빵을 구매 하시겠습니까?") {
-        navigation.navigate('Purchase');
+  const handleVoiceResult = data => {
+    if (
+      data == '현재 구매할 수 있는 목록입니다. 어떤 빵을 구매 하시겠습니까?'
+    ) {
+      navigation.navigate('Purchase');
     }
   };
 
@@ -48,13 +50,16 @@ const MainScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
-      <VoiceInput onResult={handleVoiceResult}></VoiceInput>
-      
+      <VoiceInput onResult={handleVoiceResult} />
+
       <Text style={styles.voiceText}>
         <Text>음성으로 구매를 원하시면 </Text>
         <Text style={styles.redText}>상단의 버튼</Text>
-        <Text>을 눌러주세요!</Text>
-      </Text>
+        <Text>을 누르고{'\n'}</Text>
+        <Text style={styles.redText}>                      빵빵이</Text>
+        <Text>를 불러주세요!</Text>
+        </Text>
+      
     </View>
   );
 };
@@ -66,11 +71,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F3E3D3',
   },
-  header: {
-    flexDirection: 'row-reverse',
-    width: '95%',
-    marginTop: 0,
-  },
   titleText: {
     fontSize: 60,
     color: 'black',
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   voiceText: {
     fontSize: 30,
     color: 'black',
-    marginBottom: 40,
+    marginBottom: 20,
     fontFamily: 'Pretendard-SemiBold',
   },
   redText: {
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     width: '90%',
-    marginBottom: 50,
+    marginBottom: 30,
   },
   button: {
     backgroundColor: 'white',
