@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Entypo';
 import { MY_IP_ADDRESS } from '../config/config';
 
 const ManageBreadScreen = () => {
@@ -68,6 +68,11 @@ const ManageBreadScreen = () => {
           style={styles.image}
         />
         <Text style={styles.title}>진열 빵 목록</Text>
+        <TouchableOpacity
+          style={styles.xButton}
+          onPress={() => navigation.navigate('Main')}>
+          <Icon name="home" size={60} color="#D3705B" />
+        </TouchableOpacity>
       </View>
       <FlatList
         data={breads}
@@ -95,14 +100,16 @@ const styles = StyleSheet.create({
     fontSize: 45,
     color: 'black',
     fontFamily: 'Pretendard-Bold',
-    marginBottom: 30,
+   // marginTop: 20,
+   // marginBottom: 30,
     marginLeft: 30,
-    marginRight: 30,
+    marginRight: 150,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 30,
   },
   breadItem: {
     flexDirection: 'row',
@@ -123,7 +130,20 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
-    marginBottom: 30,
+   // marginTop: 20,
+    //marginBottom: 30,
+    // marginLeft: 200,
+  },
+  xButton: {
+    marginLeft: 160,
+    borderRadius: 10,
+    padding: 10,
+    //borderWidth: 2,
+    borderColor: '#D3705B',
+    // backgroundColor : '#D3705B',
+
+    spadding: 5,
+
   },
   breadInfo: {
     flex: 1,

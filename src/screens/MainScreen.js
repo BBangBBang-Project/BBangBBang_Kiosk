@@ -3,8 +3,17 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/MaterialIcons';
+import VoiceInput from '../service/VoiceInput';
+import Tts from 'react-native-tts';
 
 const MainScreen = ({navigation}) => {
+
+  const handleVoiceResult = (data) => {
+    if(data == "현재 구매할 수 있는 목록입니다. 어떤 빵을 구매 하시겠습니까?") {
+        navigation.navigate('Purchase');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -15,10 +24,9 @@ const MainScreen = ({navigation}) => {
           size={110}
           color="black"
           marginLeft={620}
-          marginBottom={160}
+          marginBottom={180}
         />
       </TouchableOpacity>
-
       <Text style={styles.titleText}>bbangbbang</Text>
       <Image
         source={require('../assets/images/bread.png')}
@@ -39,10 +47,13 @@ const MainScreen = ({navigation}) => {
           <Text style={styles.buttonText}>빵 픽업하기</Text>
         </TouchableOpacity>
       </View>
+
+      <VoiceInput onResult={handleVoiceResult}></VoiceInput>
+      
       <Text style={styles.voiceText}>
         <Text>음성으로 구매를 원하시면 </Text>
-        <Text style={styles.redText}>빵빵아!</Text>
-        <Text>라고 불러주세요!</Text>
+        <Text style={styles.redText}>상단의 버튼</Text>
+        <Text>을 눌러주세요!</Text>
       </Text>
     </View>
   );
@@ -69,7 +80,7 @@ const styles = StyleSheet.create({
   voiceText: {
     fontSize: 30,
     color: 'black',
-    marginBottom: 50,
+    marginBottom: 40,
     fontFamily: 'Pretendard-SemiBold',
   },
   redText: {
@@ -80,7 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     width: '90%',
-    marginBottom: 80,
+    marginBottom: 50,
   },
   button: {
     backgroundColor: 'white',
@@ -100,7 +111,7 @@ const styles = StyleSheet.create({
   image: {
     width: 200,
     height: 200,
-    marginBottom: 100,
+    marginBottom: 70,
   },
 });
 
