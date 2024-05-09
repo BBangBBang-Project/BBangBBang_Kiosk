@@ -12,9 +12,7 @@ import PickupScreen from '../screens/PickupScreen';
 import PurchaseCompleteScreen from '../screens/PurchaseCompleteScreen';
 import PurchaseScreen from '../screens/PurchaseScreen';
 import RecommendationScreen from '../screens/RecommedationScreen';
-
 const Stack = createStackNavigator();
-
 const StackNavigation = () => {
   return (
     <Stack.Navigator
@@ -47,7 +45,6 @@ const StackNavigation = () => {
         name="AddBread"
         component={AddBreadScreen}
         options={{title: '', headerStyle: {backgroundColor: '#F3E3D3'}}}
-
       />
       <Stack.Screen
         name="NoPassword"

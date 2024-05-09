@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Tts from 'react-native-tts';
 import { MY_IP_ADDRESS } from '../config/config';
 
 const PurchaseCompleteScreen = ({navigation, route}) => {
@@ -44,7 +45,9 @@ const PurchaseCompleteScreen = ({navigation, route}) => {
         <Text style={styles.detailText}>픽업 완료 버튼을 눌러주세요!</Text>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Main')}>
+          onPress={() => {navigation.navigate('Main')
+          Tts.stop();
+          Tts.speak("감사합니다. 또 오세요.")}}>
           <Text style={styles.buttonText}>구매 완료</Text>
         </TouchableOpacity>
       </View>

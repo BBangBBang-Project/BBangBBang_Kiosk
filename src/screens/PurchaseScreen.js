@@ -1,3 +1,4 @@
+import Voice from "@react-native-voice/voice";
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -37,8 +38,10 @@ const PurchaseScreen = () => {
 
       if(result == "목록을 확인하고 결제를 원하시면 말씀해주세요."){
         toggleModal();
+        setResult('');
       }else if(result == "결제가 완료 되었습니다. 빵을 픽업 해주세요."){
         sendPayData();
+        setResult('');
       }
       else{
         //메뉴를 담는 과정.
@@ -251,7 +254,12 @@ const PurchaseScreen = () => {
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Main')}
+          onPress={() => {
+            navigation.navigate('Main')
+            Voice.stop();
+            Voice.cancel()
+            Voice.destroy().then(Voice.removeAllListeners);
+        }}
           style={styles.backButton}>
           <Text style={styles.buttonText}>주문취소</Text>
         </TouchableOpacity>
