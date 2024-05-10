@@ -5,11 +5,14 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Tts from 'react-native-tts';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { MY_IP_ADDRESS } from '../config/config';
-import { useResult } from './ResultContext';
+
+import { CART_COMPLETE, MY_IP_ADDRESS, NAVI_PURCHASE, ORDER_CAN, PURCHASE_COMP,MY_IP_ADDRESS } from "../config/config";
+import { useResult } from "./ResultContext";
+
 
 const VoiceInput = ({onResult}) => {
   const {result, setResult, isRecording, setIsRecording} = useResult();
+
   const [error, setError] = useState('');
   const navigation = useNavigation();
   //const [isRecording,setIsRecording] = React.useState(false); //색 변경 위해 추가
@@ -19,6 +22,7 @@ const VoiceInput = ({onResult}) => {
   },[isRecording])
 
   const startRecording = async () => {
+
     setIsRecording(true); //여기도 추가
     try {
       await Voice.start('ko-KR');
@@ -44,35 +48,39 @@ const VoiceInput = ({onResult}) => {
     setIsRecording(false);
   };
   Voice.onSpeechError = err => {
-    // console.error('음성 인식 오류:', err.error.message);
-    console.log(err.error.message);
-    // if(err.error.message == "7/No match" && isRecording){
-    //   setTimeout(() => {
-    //     startRecording();
-    //   }, 2000);
-    // };
+    console.log(err.error.message)
+
     setTimeout(() => {
       startRecording();
     }, 2000);
   };
   Voice.onSpeechResults = results => {
-    var speechResult = results.value[0].replace(/\s/g, '');
 
-    if (speechResult.includes('소금')) {
-      speechResult = '소금빵';
-    } else if (speechResult.includes('고로') || speechResult.includes('로케')) {
-      speechResult = '고로케';
-    } else if (speechResult.includes('에그') || speechResult.includes('타르')) {
-      speechResult = '에그타르트';
-    } else if (speechResult.includes('피자')) {
-      speechResult = '피자빵';
-    } else if (speechResult.includes('초코')) {
-      speechResult = '초코빵';
+    
+    var speechResult = results.value[0].replace(/\s/g, '')
+
+    //인식이 제대로 안되는 경우 조금 더 정확성을 높이기 위한 수단임.. 중요하진 않다.
+    if (speechResult.includes("소금")) {
+      speechResult = "소금빵"
     }
+    else if (speechResult.includes("고로") || speechResult.includes("로케")) {
+      speechResult = "고로케"
+    }
+    else if (speechResult.includes("에그") || speechResult.includes("타르")) {
+      speechResult = "에그타르트"
+    }
+    else if (speechResult.includes("피자")) {
+      speechResult = "피자빵"
+    }
+    else if (speechResult.includes("초코")) {
+      speechResult = "초코빵"
+    }
+
 
     console.log(speechResult);
     sendResult(speechResult);
   };
+
   // useEffect(() => {
 
   //   // startRecording();
@@ -92,7 +100,7 @@ const VoiceInput = ({onResult}) => {
     };
   }, []);
 
-  const sendResult = async result => {
+  const sendResult = async (result) => {
     try {
       await axios
         .post(`http://${MY_IP_ADDRESS}:8080/voice`, {text: result})
@@ -101,30 +109,24 @@ const VoiceInput = ({onResult}) => {
           Tts.speak(response.data);
           console.log(response.data);
 
-          if (
-            response.data ==
-            '장바구니에 담았습니다. 추가할 메뉴 또는 주문을 말씀해 주세요.'
-          ) {
-            //이게 전역 변수 설정
+
+          if (response.data == CART_COMPLETE) {//이게 전역 변수 설정
             setResult(result);
-          } else if (
-            response.data ==
-            '현재 구매할 수 있는 목록입니다. 어떤 빵을 구매 하시겠습니까?'
-          ) {
-            //이건 main 화면으로 보내서 navigation 사용
-            onResult(response.data);
-          } else {
-            //이게 전역 변수 설정
+          }
+          else if (response.data == NAVI_PURCHASE) {
+            navigation.navigate('Purchase')
+          }
+          else {//이게 전역 변수 설정
             setResult(response.data);
           }
 
-          if (response.data == '결제가 완료 되었습니다. 빵을 픽업 해주세요.') {
-            Voice.cancel();
-            Voice.destroy();
-          } else if (response.data == '주문이 취소되었습니다.') {
-            Voice.cancel();
-            Voice.destroy();
-            navigation.navigate('Main');
+          if (response.data == PURCHASE_COMP) {
+            Voice.cancel()
+            Voice.destroy()
+          } else if (response.data == ORDER_CAN) {
+            Voice.cancel()
+            Voice.destroy()
+            navigation.navigate('Main')
           } else {
             setTimeout(() => {
               startRecording();
@@ -135,7 +137,6 @@ const VoiceInput = ({onResult}) => {
           console.error('Result sending error:', error);
         });
       console.log('Result sent successfully');
-
       // setIsChanged(true);
     } catch (error) {
       console.error('Error while sending result:', error);
@@ -157,9 +158,5 @@ const VoiceInput = ({onResult}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  button: {
-    //아직 안 쓰긴 하는데 나중에 디자인 수정할 수도 있으니까 냅둠
-  },
-});
 export default VoiceInput;
+

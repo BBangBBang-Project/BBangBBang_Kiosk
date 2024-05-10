@@ -11,8 +11,9 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+
+import { GET_MODAL, MY_IP_ADDRESS, PURCHASE_COMP, MY_IP_ADDRESS } from '../config/config';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { MY_IP_ADDRESS } from '../config/config';
 import { useResult } from '../service/ResultContext';
 
 const PurchaseScreen = () => {
@@ -38,10 +39,10 @@ const PurchaseScreen = () => {
   useEffect(() => {
       // console.log(`result가 변경되었습니다: ${result}`);
 
-      if(result == "목록을 확인하고 결제를 원하시면 말씀해주세요."){
+      if(result == GET_MODAL){
         toggleModal();
         setResult('');
-      }else if(result == "결제가 완료 되었습니다. 빵을 픽업 해주세요."){
+      }else if(result == PURCHASE_COMP){
         sendPayData();
         setResult('');
       }

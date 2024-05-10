@@ -9,6 +9,7 @@ export const ResultProvider = ({children}) => {
   const [result, setResult] = useState('');
   const [isRecording, setIsRecording] = React.useState(false); //색 변경 위해 추가
 
+
   return (
     <ResultContext.Provider
       value={{result, setResult, isRecording, setIsRecording}}>
