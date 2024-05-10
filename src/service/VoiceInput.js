@@ -2,11 +2,10 @@ import Voice from '@react-native-voice/voice';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import Tts from 'react-native-tts';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-
-import { CART_COMPLETE, MY_IP_ADDRESS, NAVI_PURCHASE, ORDER_CAN, PURCHASE_COMP,MY_IP_ADDRESS } from "../config/config";
+import { CART_COMPLETE, MY_IP_ADDRESS, NAVI_PURCHASE, ORDER_CAN, PURCHASE_COMP } from "../config/config";
 import { useResult } from "./ResultContext";
 
 
@@ -15,12 +14,8 @@ const VoiceInput = ({onResult}) => {
 
   const [error, setError] = useState('');
   const navigation = useNavigation();
-  //const [isRecording,setIsRecording] = React.useState(false); //색 변경 위해 추가
 
-  useEffect(()=>{
-    console.log(isRecording)
-  },[isRecording])
-
+ 
   const startRecording = async () => {
 
     setIsRecording(true); //여기도 추가
@@ -81,16 +76,6 @@ const VoiceInput = ({onResult}) => {
     sendResult(speechResult);
   };
 
-  // useEffect(() => {
-
-  //   // startRecording();
-
-  //   return () => {
-  //     Voice.stop();
-  //     Voice.destroy().then(Voice.removeAllListeners);
-  //   };
-  // }, [startRecording]);
-
   useEffect(() => {
     // 음성 인식이 종료되면 stopRecording을 호출하고 아이콘 색상 변경
     Voice.onSpeechEnd = stopRecording;
@@ -146,7 +131,6 @@ const VoiceInput = ({onResult}) => {
   return (
     <View style={{alignItems: 'center', margin: 20}}>
       <TouchableOpacity
-        style={styles.button}
         onPress={isRecording ? stopRecording : startRecording}>
         <Icon
           name="microphone"

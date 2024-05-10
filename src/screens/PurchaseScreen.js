@@ -12,8 +12,8 @@ import {
   View
 } from 'react-native';
 
-import { GET_MODAL, MY_IP_ADDRESS, PURCHASE_COMP, MY_IP_ADDRESS } from '../config/config';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+import { GET_MODAL, MY_IP_ADDRESS, PURCHASE_COMP } from '../config/config';
 import { useResult } from '../service/ResultContext';
 
 const PurchaseScreen = () => {
