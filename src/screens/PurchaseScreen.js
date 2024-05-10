@@ -11,7 +11,9 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { GET_MODAL, MY_IP_ADDRESS, PURCHASE_COMP } from '../config/config';
+
+import { GET_MODAL, MY_IP_ADDRESS, PURCHASE_COMP, MY_IP_ADDRESS } from '../config/config';
+import Icon from 'react-native-vector-icons/FontAwesome6';
 import { useResult } from '../service/ResultContext';
 
 const PurchaseScreen = () => {
@@ -20,7 +22,8 @@ const PurchaseScreen = () => {
   const [breads, setBreads] = useState([]);
   const navigation = useNavigation();
   const [orderId, setOrderId] = useState(null);
-  const {result, setResult} = useResult();
+  const {result, setResult, isRecording, setIsRecording} = useResult();
+
 
   useEffect(() => {
     axios
@@ -235,7 +238,16 @@ const PurchaseScreen = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.row}>
       <Text style={styles.title}>안녕하세요! 빵빵입니다!</Text>
+
+      <Icon
+            name="microphone"
+            size={60}
+            color={isRecording ? '#50AF00' : '#D3705B'} // 음성인식 중이면 초록색, 아니면 원래색으로
+            style={styles.icon}
+          />
+      </View>
       <View style={styles.menuContainer}>
         <FlatList
           data={breads}
@@ -253,6 +265,7 @@ const PurchaseScreen = () => {
         />
       </View>
       <View style={styles.buttonContainer}>
+
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('Main')
@@ -277,7 +290,18 @@ const PurchaseScreen = () => {
           setModalVisible(!modalVisible);
         }}>
         <View style={styles.modalContainer}>
+          <View style={styles.row}>
           <Text style={styles.orderCheckTitle}>주문 내역</Text>
+
+      <Icon
+            name="microphone"
+            size={60}
+            color={isRecording ? '#50AF00' : '#D3705B'} // 음성인식 중이면 초록색, 아니면 원래색으로
+            style={styles.modalIcon}
+          />
+          </View>
+          
+          
           <View style={styles.orderCheckContainer}>
             <FlatList
               data={orders}
@@ -405,6 +429,7 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
     marginBottom: 20,
+    marginLeft: 320,
   },
   orderCheckName: {
     fontSize: 35,
@@ -534,6 +559,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     marginLeft: 70,
     marginTop: 20,
+  },
+  icon: {
+    marginLeft: 330,
+    marginTop: 25,
+  },
+
+  modalIcon: {
+    marginLeft: 260,
   },
   breadImage: {
     marginTop: 10,
