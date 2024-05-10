@@ -238,7 +238,7 @@ const PurchaseScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.row}>
+      <View style={styles.titleContainer}>
       <Text style={styles.title}>안녕하세요! 빵빵입니다!</Text>
 
       <Icon
@@ -379,6 +379,10 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
   },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   menuButton: {
     width: 300,
     backgroundColor: '#F3E3D3',
@@ -429,7 +433,8 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
     marginBottom: 20,
-    marginLeft: 320,
+    // marginLeft: 320,
+    marginLeft: '40%',
   },
   orderCheckName: {
     fontSize: 35,
@@ -561,12 +566,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   icon: {
-    marginLeft: 330,
+    //marginLeft: 330,
+    //marginLeft: '30%',
+    marginRight: '10%',
     marginTop: 25,
   },
 
   modalIcon: {
-    marginLeft: 260,
+    // marginLeft: 260,
+    marginLeft: '30%',
   },
   breadImage: {
     marginTop: 10,
