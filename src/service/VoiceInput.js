@@ -5,30 +5,31 @@ import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Tts from "react-native-tts";
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { MY_IP_ADDRESS } from "../config/config";
+import { CART_COMPLETE, MY_IP_ADDRESS, NAVI_PURCHASE, ORDER_CAN, PURCHASE_COMP } from "../config/config";
 import { useResult } from "./ResultContext";
 
-const VoiceInput = ({ onResult }) => {
-  const {result, setResult} = useResult();
+const VoiceInput = () => {
+  const { result, setResult } = useResult();
   const [error, setError] = useState('');
   const navigation = useNavigation();
   // const [isRecording,setIsRecording] = React.useState(false);
 
   const startRecording = async () => {
-    try{
-        await Voice.start('ko-KR');
-    }catch(err){
-        setError(err)
+    
+    try {
+      await Voice.start('ko-KR');
+    } catch (err) {
+      setError(err)
     }
-};
+  };
 
-const stopRecording = async () => {
-    try{
-        await Voice.stop();
-    }catch(err){
-        setError(err);
+  const stopRecording = async () => {
+    try {
+      await Voice.stop();
+    } catch (err) {
+      setError(err);
     }
-};
+  };
 
   Voice.onSpeechStart = () => {
     console.log('음성 인식 시작됨');
@@ -37,22 +38,17 @@ const stopRecording = async () => {
     console.log('음성 인식 종료됨');
   };
   Voice.onSpeechError = err => {
-    // console.error('음성 인식 오류:', err.error.message);
     console.log(err.error.message)
-    // if(err.error.message == "7/No match" && isRecording){
-    //   setTimeout(() => {
-    //     startRecording();
-    //   }, 2000);  
-    // };
-      setTimeout(() => {
-        startRecording();
-      }, 2000);
+    setTimeout(() => {
+      startRecording();
+    }, 2000);
   };
   Voice.onSpeechResults = results => {
 
     
-    var speechResult = results.value[0].replace(/\s/g,'')
+    var speechResult = results.value[0].replace(/\s/g, '')
 
+    //인식이 제대로 안되는 경우 조금 더 정확성을 높이기 위한 수단임.. 중요하진 않다.
     if (speechResult.includes("소금")) {
       speechResult = "소금빵"
     }
@@ -68,22 +64,11 @@ const stopRecording = async () => {
     else if (speechResult.includes("초코")) {
       speechResult = "초코빵"
     }
-    
+
 
     console.log(speechResult);
     sendResult(speechResult);
   };
-  // useEffect(() => {
-    
-
-  //   // startRecording();
-
-  //   return () => {
-  //     Voice.stop();
-  //     Voice.destroy().then(Voice.removeAllListeners);
-  //   };
-  // }, [startRecording]); 
-
 
 
   const sendResult = async (result) => {
@@ -94,30 +79,27 @@ const stopRecording = async () => {
           Tts.speak(response.data);
           console.log(response.data);
 
-          if(response.data == "장바구니에 담았습니다. 추가할 메뉴 또는 주문을 말씀해 주세요."){
-            //이게 전역 변수 설정
+          if (response.data == CART_COMPLETE) {//이게 전역 변수 설정
             setResult(result);
           }
-          else if(response.data == "현재 구매할 수 있는 목록입니다. 어떤 빵을 구매 하시겠습니까?"){
-            //이건 main 화면으로 보내서 navigation 사용 
-            onResult(response.data)
+          else if (response.data == NAVI_PURCHASE) {
+            navigation.navigate('Purchase')
           }
-          else {
-            //이게 전역 변수 설정
+          else {//이게 전역 변수 설정
             setResult(response.data);
           }
 
-          if(response.data == "결제가 완료 되었습니다. 빵을 픽업 해주세요."){
+          if (response.data == PURCHASE_COMP) {
             Voice.cancel()
             Voice.destroy()
-          }else if(response.data == "주문이 취소되었습니다."){
+          } else if (response.data == ORDER_CAN) {
             Voice.cancel()
             Voice.destroy()
             navigation.navigate('Main')
-          }else{
+          } else {
             setTimeout(() => {
               startRecording();
-            }, 4500); 
+            }, 4500);
           }
 
         }).catch(error => {
@@ -125,7 +107,7 @@ const stopRecording = async () => {
         });
       console.log('Result sent successfully');
 
-      
+
       // setIsChanged(true);
 
     } catch (error) {
@@ -135,19 +117,14 @@ const stopRecording = async () => {
 
 
   return (
-    <View style={{alignItems: 'center',margin:20}}>
-        <TouchableOpacity 
-        style={styles.button} 
+    <View style={{ alignItems: 'center', margin: 20 }}>
+      <TouchableOpacity
         onPress={startRecording}>
-          <Icon name="microphone" size={60} color="#D3705B" />
-        </TouchableOpacity>
+        <Icon name="microphone" size={60} color="#D3705B" />
+      </TouchableOpacity>
     </View>
-);
+  );
 };
 
-const styles = StyleSheet.create({
-  button: {
-    //아직 안 쓰긴 하는데 나중에 디자인 수정할 수도 있으니까 냅둠
-  },
-});
+
 export default VoiceInput;

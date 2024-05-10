@@ -4,17 +4,19 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/MaterialIcons';
 import VoiceInput from '../service/VoiceInput';
+import { useNavigation } from '@react-navigation/native';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
-const MainScreen = ({navigation}) => {
-  const handleVoiceResult = data => {
-    if (
-      data == '현재 구매할 수 있는 목록입니다. 어떤 빵을 구매 하시겠습니까?'
-    ) {
-      navigation.navigate('Purchase');
-    }
-  };
+const MainScreen = () => {
+  const navigation = useNavigation();
+  // const handleVoiceResult = data => {
+  //   if (
+  //     data == '현재 구매할 수 있는 목록입니다. 어떤 빵을 구매 하시겠습니까?'
+  //   ) {
+  //     navigation.navigate('Purchase');
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
@@ -50,7 +52,7 @@ const MainScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
-      <VoiceInput onResult={handleVoiceResult} />
+      <VoiceInput/>
 
       <Text style={styles.voiceText}>
         <Text>음성으로 구매를 원하시면 </Text>

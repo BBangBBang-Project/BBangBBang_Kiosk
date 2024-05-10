@@ -7,6 +7,7 @@ export const useResult = () => useContext(ResultContext);
 
 export const ResultProvider = ({ children }) => {
   const [result, setResult] = useState('');
+  
 
   return (
     <ResultContext.Provider value={{ result, setResult }}>
