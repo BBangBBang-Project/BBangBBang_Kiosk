@@ -10,7 +10,7 @@ import { useResult } from "./ResultContext";
 
 
 const VoiceInput = () => {
-  const {result, setResult, isRecording, setIsRecording} = useResult();
+  const {result, setResult, isRecording, setIsRecording,isEnd,setIsEnd} = useResult();
   const [error, setError] = useState('');
   const navigation = useNavigation();
 
@@ -44,11 +44,13 @@ const VoiceInput = () => {
   Voice.onSpeechError = err => {
     console.log(err.error.message)
     setIsRecording(false)
-
-    setTimeout(() => {
-      startRecording();
-    }, 2000);
+    if(!isEnd){
+      setTimeout(() => {
+        startRecording();
+      }, 2000);
+    }
   };
+
   Voice.onSpeechResults = results => {
 
     
@@ -82,6 +84,17 @@ const VoiceInput = () => {
       Voice.removeAllListeners();
     };
   }, []);
+
+  useEffect(()=>{
+    // console.log(`${isEnd}  ${isRecording}`)
+    if(isEnd && isRecording){
+      Voice.stop();
+      Voice.cancel();
+      Voice.destroy();
+      setIsRecording(false);
+      setIsEnd(false)
+    }
+  },[isEnd,isRecording])
 
   const sendResult = async (result) => {
     try {
@@ -125,7 +138,15 @@ const VoiceInput = () => {
   return (
     <View style={{alignItems: 'center', margin: 20}}>
       <TouchableOpacity
-        onPress={isRecording ? stopRecording : startRecording}>
+        onPress={() => {
+          if (isRecording) {
+            // stopRecording();
+            setIsEnd(true)
+          } else {
+            startRecording();
+            setIsEnd(false); // startRecording을 호출할 때만 setIsEnd(false)를 호출합니다.
+          }
+        }}>
         <Icon
           name="microphone"
           size={60}

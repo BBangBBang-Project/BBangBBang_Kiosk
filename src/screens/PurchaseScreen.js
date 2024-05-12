@@ -22,7 +22,7 @@ const PurchaseScreen = () => {
   const [breads, setBreads] = useState([]);
   const navigation = useNavigation();
   const [orderId, setOrderId] = useState(null);
-  const {result, setResult, isRecording, setIsRecording} = useResult();
+  const {result, setResult, isRecording, setIsRecording,isEnd,setIsEnd} = useResult();
 
 
   useEffect(() => {
@@ -279,6 +279,7 @@ const PurchaseScreen = () => {
             Voice.stop();
             Voice.cancel()
             Voice.destroy().then(Voice.removeAllListeners);
+            setIsEnd(true);
         }}
           style={styles.backButton}>
           <Text style={styles.buttonText}>주문취소</Text>
