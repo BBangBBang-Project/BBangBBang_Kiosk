@@ -52,25 +52,22 @@ const VoiceInput = () => {
   Voice.onSpeechResults = results => {
 
     
-    var speechResult = results.value[0]
+    var speechResult = results.value[0].replace(/\s+/g, " ")
+    
+    //인식이 제대로 안되는 경우 조금 더 정확성을 높이기 위한 수단임
 
-    // var speechResult = results.value[0].replace(/\s/g, '')
-    //인식이 제대로 안되는 경우 조금 더 정확성을 높이기 위한 수단임.. 중요하진 않다.
-    // if (speechResult.includes("소금")) {
-    //   speechResult = "소금빵"
-    // }
-    // else if (speechResult.includes("고로") || speechResult.includes("로케")) {
-    //   speechResult = "고로케"
-    // }
-    // else if (speechResult.includes("에그") || speechResult.includes("타르")) {
-    //   speechResult = "에그타르트"
-    // }
-    // else if (speechResult.includes("피자")) {
-    //   speechResult = "피자빵"
-    // }
-    // else if (speechResult.includes("초코")) {
-    //   speechResult = "초코빵"
-    // }
+    if (speechResult.includes("소금")) {
+      speechResult = speechResult.replace(/소금방/g, "소금빵")
+    }
+    else if (speechResult.includes("피자")) {
+      speechResult = speechResult.replace(/피자방/g, "피자빵")
+    }
+    else if (speechResult.includes("초코")) {
+      speechResult = speechResult.replace(/초코방/g, "초코빵")
+    }
+    else if (speechResult.includes("식방")) {
+      speechResult = speechResult.replace(/식방/g, "식빵")
+    }
 
 
     console.log(speechResult);
