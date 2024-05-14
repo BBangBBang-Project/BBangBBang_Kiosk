@@ -9,9 +9,8 @@ import { CART_COMPLETE, MY_IP_ADDRESS, NAVI_PURCHASE, ORDER_CAN, PURCHASE_COMP }
 import { useResult } from "./ResultContext";
 
 
-const VoiceInput = ({onResult}) => {
-  const {result, setResult, isRecording, setIsRecording} = useResult();
-
+const VoiceInput = () => {
+  const {result, setResult, isRecording, setIsRecording,isEnd,setIsEnd} = useResult();
   const [error, setError] = useState('');
   const navigation = useNavigation();
 
@@ -27,6 +26,7 @@ const VoiceInput = ({onResult}) => {
   };
 
   const stopRecording = async () => {
+    console.log('음성 인식 종료됨');
     setIsRecording(false); //여기도 추가
     try {
       await Voice.stop();
@@ -39,36 +39,36 @@ const VoiceInput = ({onResult}) => {
     console.log('음성 인식 시작됨');
   };
   Voice.onSpeechEnd = () => {
-    console.log('음성 인식 종료됨');
     setIsRecording(false);
   };
   Voice.onSpeechError = err => {
     console.log(err.error.message)
-
-    setTimeout(() => {
-      startRecording();
-    }, 2000);
+    setIsRecording(false)
+    if(!isEnd){
+      setTimeout(() => {
+        startRecording();
+      }, 2000);
+    }
   };
+
   Voice.onSpeechResults = results => {
 
     
-    var speechResult = results.value[0].replace(/\s/g, '')
+    var speechResult = results.value[0].replace(/\s+/g, " ")
+    
+    //인식이 제대로 안되는 경우 조금 더 정확성을 높이기 위한 수단임
 
-    //인식이 제대로 안되는 경우 조금 더 정확성을 높이기 위한 수단임.. 중요하진 않다.
     if (speechResult.includes("소금")) {
-      speechResult = "소금빵"
-    }
-    else if (speechResult.includes("고로") || speechResult.includes("로케")) {
-      speechResult = "고로케"
-    }
-    else if (speechResult.includes("에그") || speechResult.includes("타르")) {
-      speechResult = "에그타르트"
+      speechResult = speechResult.replace(/소금방/g, "소금빵")
     }
     else if (speechResult.includes("피자")) {
-      speechResult = "피자빵"
+      speechResult = speechResult.replace(/피자방/g, "피자빵")
     }
     else if (speechResult.includes("초코")) {
-      speechResult = "초코빵"
+      speechResult = speechResult.replace(/초코방/g, "초코빵")
+    }
+    else if (speechResult.includes("식방")) {
+      speechResult = speechResult.replace(/식방/g, "식빵")
     }
 
 
@@ -85,6 +85,17 @@ const VoiceInput = ({onResult}) => {
     };
   }, []);
 
+  useEffect(()=>{
+    // console.log(`${isEnd}  ${isRecording}`)
+    if(isEnd && isRecording){
+      Voice.stop();
+      Voice.cancel();
+      Voice.destroy();
+      setIsRecording(false);
+      setIsEnd(false)
+    }
+  },[isEnd,isRecording])
+
   const sendResult = async (result) => {
     try {
       await axios
@@ -94,11 +105,7 @@ const VoiceInput = ({onResult}) => {
           Tts.speak(response.data);
           console.log(response.data);
 
-
-          if (response.data == CART_COMPLETE) {//이게 전역 변수 설정
-            setResult(result);
-          }
-          else if (response.data == NAVI_PURCHASE) {
+          if(response.data == NAVI_PURCHASE) {
             navigation.navigate('Purchase')
           }
           else {//이게 전역 변수 설정
@@ -131,7 +138,15 @@ const VoiceInput = ({onResult}) => {
   return (
     <View style={{alignItems: 'center', margin: 20}}>
       <TouchableOpacity
-        onPress={isRecording ? stopRecording : startRecording}>
+        onPress={() => {
+          if (isRecording) {
+            // stopRecording();
+            setIsEnd(true)
+          } else {
+            startRecording();
+            setIsEnd(false); // startRecording을 호출할 때만 setIsEnd(false)를 호출합니다.
+          }
+        }}>
         <Icon
           name="microphone"
           size={60}

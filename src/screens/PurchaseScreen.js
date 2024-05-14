@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { GET_MODAL, MY_IP_ADDRESS, PURCHASE_COMP } from '../config/config';
+import { CART_COMPLETE, GET_MODAL, MY_IP_ADDRESS, PURCHASE_COMP } from '../config/config';
 import { useResult } from '../service/ResultContext';
 
 const PurchaseScreen = () => {
@@ -22,7 +22,7 @@ const PurchaseScreen = () => {
   const [breads, setBreads] = useState([]);
   const navigation = useNavigation();
   const [orderId, setOrderId] = useState(null);
-  const {result, setResult, isRecording, setIsRecording} = useResult();
+  const {result, setResult, isRecording, setIsRecording,isEnd,setIsEnd} = useResult();
 
 
   useEffect(() => {
@@ -46,23 +46,30 @@ const PurchaseScreen = () => {
         sendPayData();
         setResult('');
       }
-      else{
+      else if(result.includes(CART_COMPLETE)){
         //메뉴를 담는 과정.
-        const menuItem = breads.find(bread => result.includes(bread.name));
+        const regex = /(\D+?) (\d+)개/;
+        const match = result.match(regex);
 
-
-        if (menuItem) {
-          const existingIndex = orders.findIndex(order => order.id === menuItem.id);
-
-          if (existingIndex !== -1) {
-            const updatedOrders = [...orders];
-            updatedOrders[existingIndex].count++;
-            setOrders(updatedOrders);
+        if (match) {
+          const itemName = match[1].trim();  // 아이템 이름 추출
+          const quantity = parseInt(match[2].trim(), 10);  // 수량 추출 및 정수로 변환
+        
+          const menuItem = breads.find(bread => result.includes(bread.name));
+        
+          if (menuItem) {
+            const existingIndex = orders.findIndex(order => order.id === menuItem.id);
+        
+            if (existingIndex !== -1) {
+              const updatedOrders = [...orders];
+              updatedOrders[existingIndex].count += quantity;  // 여기서 quantity 만큼 증가
+              setOrders(updatedOrders);
+            } else {
+              setOrders([...orders, { ...menuItem, count: quantity }]);
+            }
           } else {
-            setOrders([...orders, { ...menuItem, count: 1 }]);
+            console.log('해당하는 메뉴 이름의 빵이 없습니다.');
           }
-        } else {
-          console.log('해당하는 메뉴 이름의 빵이 없습니다.');
         }
       }
       
@@ -272,6 +279,7 @@ const PurchaseScreen = () => {
             Voice.stop();
             Voice.cancel()
             Voice.destroy().then(Voice.removeAllListeners);
+            setIsEnd(true);
         }}
           style={styles.backButton}>
           <Text style={styles.buttonText}>주문취소</Text>
