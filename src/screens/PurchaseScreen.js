@@ -125,7 +125,7 @@ const PurchaseScreen = () => {
     return (parseInt(price, 10) * 0.7).toFixed(0); // 30% 할인된 가격
   };
 
-  //주문완료창으로 데이터 보내기
+  //주문완료창으로 데이터 보내기 + 자판기 잠금 햊[
   const sendPayData = () => {
     const orderData = orders.map(item => ({
       order_id: orderId,
@@ -138,6 +138,14 @@ const PurchaseScreen = () => {
         setOrderId(response.data);
         console.log('Order sent successfully:', response.data);
         setModalVisible(false);
+        axios
+          .post(`http://52.79.172.135:8080/api/unlock`)
+          .then(response => {
+            console.log('lock success:', response.data);
+          })
+          .catch(error => {
+            console.error('unlock error:', error);
+          });
         navigation.navigate('PurchaseComplete', {
           orderId: response.data,
         });

@@ -23,6 +23,19 @@ const PickupCompleteScreen = ({navigation}) => {
       {item.breadName} X {item.quantitySold}
     </Text>
   );
+
+  //자판기 잠금
+  const pickupComplete = () => {
+    axios
+      .post('http://52.79.172.135:8080/api/lock')
+      .then(response => {
+        console.log('lock success:', response.data);
+        navigation.navigate('Main');
+      })
+      .catch(error => {
+        console.error('lock error:', error);
+      });
+  };
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
@@ -37,9 +50,7 @@ const PickupCompleteScreen = ({navigation}) => {
 
         <Text style={styles.detailText}>빵을 픽업하신 후 문을 꼭 닫고</Text>
         <Text style={styles.detailText}>픽업 완료 버튼을 눌러주세요!</Text>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('Main')}>
+        <TouchableOpacity style={styles.button} onPress={pickupComplete}>
           <Text style={styles.buttonText}>픽업 완료</Text>
         </TouchableOpacity>
       </View>
