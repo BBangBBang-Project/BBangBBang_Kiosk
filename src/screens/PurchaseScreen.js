@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { CART_COMPLETE, GET_MODAL, IP, MY_IP_ADDRESS, PURCHASE_COMP } from '../config/config';
+import { CART_COMPLETE, GET_MODAL, MY_IP_ADDRESS, PURCHASE_COMP } from '../config/config';
 import { useResult } from '../service/ResultContext';
 
 const PurchaseScreen = () => {
@@ -139,7 +139,7 @@ const PurchaseScreen = () => {
         console.log('Order sent successfully:', response.data);
         setModalVisible(false);
         axios
-          .post(`http://${IP}:8080/api/unlock`)
+          .post(`http://${MY_IP_ADDRESS}:8080/api/unlock`)
           .then(response => {
             console.log('lock success:', response.data);
           })

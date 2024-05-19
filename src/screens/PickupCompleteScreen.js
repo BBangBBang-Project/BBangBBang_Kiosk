@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { IP, MY_IP_ADDRESS } from '../config/config';
+import { MY_IP_ADDRESS } from '../config/config';
 
 const PickupCompleteScreen = ({navigation}) => {
   const [data, setData] = useState([]);
@@ -27,7 +27,7 @@ const PickupCompleteScreen = ({navigation}) => {
   //자판기 잠금
   const pickupComplete = () => {
     axios
-      .post(`http://${IP}:8080/api/lock`)
+      .post(`http://${MY_IP_ADDRESS}:8080/api/lock`)
       .then(response => {
         console.log('lock success:', response.data);
         navigation.navigate('Main');

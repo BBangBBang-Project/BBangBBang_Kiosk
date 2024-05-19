@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Tts from 'react-native-tts';
-import { IP, MY_IP_ADDRESS } from '../config/config';
+import { MY_IP_ADDRESS } from '../config/config';
 
 const PurchaseCompleteScreen = ({navigation, route}) => {
   const [data, setData] = useState([]);
@@ -32,7 +32,7 @@ const PurchaseCompleteScreen = ({navigation, route}) => {
   //자판기 잠금
   const purchaseComplete = () => {
     axios
-      .post(`http://${IP}:8080/api/lock`)
+      .post(`http://${MY_IP_ADDRESS}:8080/api/lock`)
       .then(response => {
         console.log('lock success:', response.data);
         Tts.stop();
