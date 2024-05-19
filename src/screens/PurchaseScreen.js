@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { CART_COMPLETE, GET_MODAL, MY_IP_ADDRESS, PURCHASE_COMP } from '../config/config';
+import { CART_COMPLETE, GET_MODAL, IP, MY_IP_ADDRESS, PURCHASE_COMP } from '../config/config';
 import { useResult } from '../service/ResultContext';
 
 const PurchaseScreen = () => {
@@ -125,7 +125,7 @@ const PurchaseScreen = () => {
     return (parseInt(price, 10) * 0.7).toFixed(0); // 30% 할인된 가격
   };
 
-  //주문완료창으로 데이터 보내기 + 자판기 잠금 햊[
+  //주문완료창으로 데이터 보내기 + 자판기 잠금 해제
   const sendPayData = () => {
     const orderData = orders.map(item => ({
       order_id: orderId,
@@ -139,7 +139,7 @@ const PurchaseScreen = () => {
         console.log('Order sent successfully:', response.data);
         setModalVisible(false);
         axios
-          .post(`http://52.79.172.135:8080/api/unlock`)
+          .post(`http://${IP}:8080/api/unlock`)
           .then(response => {
             console.log('lock success:', response.data);
           })

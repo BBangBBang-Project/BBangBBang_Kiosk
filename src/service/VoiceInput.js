@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import Tts from 'react-native-tts';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { CART_COMPLETE, MY_IP_ADDRESS, NAVI_PURCHASE, ORDER_CAN, PURCHASE_COMP } from "../config/config";
+import { MY_IP_ADDRESS, NAVI_PURCHASE, ORDER_CAN, PURCHASE_COMP } from "../config/config";
 import { useResult } from "./ResultContext";
 
 
@@ -122,7 +122,7 @@ const VoiceInput = () => {
           } else {
             setTimeout(() => {
               startRecording();
-            }, 4500);
+            }, 4700);
           }
         })
         .catch(error => {
