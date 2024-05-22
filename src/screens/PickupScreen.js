@@ -7,7 +7,8 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import { MY_IP_ADDRESS } from '../config/config';
+import axios from 'axios';
 const PickupScreen = ({navigation}) => {
   const [password, setPassword] = useState('');
 
@@ -20,6 +21,14 @@ const PickupScreen = ({navigation}) => {
   const handleConfirm = () => {
     if (password === '0000') {
       navigation.navigate('PickupComplete');
+      axios
+          .post(`http://${MY_IP_ADDRESS}:8080/api/unlock`)
+          .then(response => {
+            console.log('lock success:', response.data);
+          })
+          .catch(error => {
+            console.error('unlock error:', error);
+          });
     } else {
       navigation.navigate('NoPassword');
     }
