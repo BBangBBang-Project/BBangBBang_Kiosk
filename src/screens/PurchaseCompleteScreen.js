@@ -29,6 +29,21 @@ const PurchaseCompleteScreen = ({navigation, route}) => {
     </Text>
   );
 
+  //자판기 잠금
+  const purchaseComplete = () => {
+    axios
+      .post(`http://${MY_IP_ADDRESS}:8080/api/lock`)
+      .then(response => {
+        console.log('lock success:', response.data);
+        Tts.stop();
+        Tts.speak('감사합니다. 또 오세요.');
+        navigation.navigate('Main');
+      })
+      .catch(error => {
+        console.error('lock error:', error);
+      });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
@@ -45,9 +60,7 @@ const PurchaseCompleteScreen = ({navigation, route}) => {
         <Text style={styles.detailText}>픽업 완료 버튼을 눌러주세요!</Text>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => {navigation.navigate('Main')
-          Tts.stop();
-          Tts.speak("감사합니다. 또 오세요.")}}>
+          onPress={purchaseComplete}>
           <Text style={styles.buttonText}>구매 완료</Text>
         </TouchableOpacity>
       </View>
