@@ -122,7 +122,7 @@ const VoiceInput = () => {
           } else {
             setTimeout(() => {
               startRecording();
-            }, 4700);
+            }, 5700);
           }
         })
         .catch(error => {
