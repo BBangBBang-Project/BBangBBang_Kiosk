@@ -71,6 +71,7 @@ const PurchaseScreen = () => {
             console.log('해당하는 메뉴 이름의 빵이 없습니다.');
           }
         }
+        setResult('');
       }
       
   }, [result]); // 의존성 배열에 result를 추가
