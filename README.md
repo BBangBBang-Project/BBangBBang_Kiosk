@@ -6,12 +6,12 @@
 
 ## ✔️ GUIDES
 
-Android Studio의 윈도우 환경에서 실행하였습니다.
+Android Studio의 안드로이드 환경에서 실행하였습니다.
 
 ## 📷: 실행 화면
 
 #### 구매
-<img width="880" alt="image" src="https://github.com/BBangBBang-Project/BBangBBang_Kiosk/assets/127072393/7637f2a3-95f6-44cd-bde1-23b227195ed9">
+<img width="337" alt="image" src="https://github.com/BBangBBang-Project/BBangBBang_Kiosk/assets/127072393/def31d18-9913-4b32-bd44-fa9e9bd202a5">
 
 #### 관리자 모드
 <img width="337" alt="image" src="https://github.com/BBangBBang-Project/BBangBBang_Kiosk/assets/127072393/04f1b506-dee8-4ed3-9920-38b2868b2a9b">
